@@ -252,10 +252,12 @@ kodeblocks/
 │   ├── robots.txt
 │   └── (images, fonts, etc.)
 │
-├── supabase-schema.sql               # Database schema
+├── database/                         # Database files
+│   └── schema.sql                   # Supabase schema
+│
 ├── package.json                      # Dependencies
 ├── svelte.config.js                  # SvelteKit configuration
-├── tailwind.config.js                # Tailwind configuration
+├── postcss.config.js                 # PostCSS configuration (Tailwind v4)
 ├── vite.config.js                    # Vite configuration
 └── jsconfig.json                     # JavaScript configuration
 ```
@@ -995,6 +997,95 @@ onMount(() => {
   return () => data.subscription.unsubscribe();
 });
 ```
+
+---
+
+## Styling with Tailwind CSS v4
+
+KodeBlocks uses **Tailwind CSS v4** with the modern `@theme` approach (no `tailwind.config.js`).
+
+### Custom Theme Configuration
+
+All custom colors and theme variables are defined in `src/app.css`:
+
+```css
+@import 'tailwindcss';
+
+@theme {
+  /* Primary brand colors */
+  --color-primary-50: #F0F7FF;
+  --color-primary-100: #E0EFFF;
+  --color-primary-200: #C0DFFF;
+  --color-primary-300: #A0CFFF;
+  --color-primary-400: #60AFFF;
+  --color-primary-500: #208FFF;
+  --color-primary-600: #0077EE;
+  --color-primary-700: #0066CC;
+  --color-primary-800: #0055AA;
+  --color-primary-900: #004488;
+  --color-primary-950: #003366;
+  
+  /* Semantic colors */
+  --color-success-100: #F0FFF6;
+  --color-success-700: #00AA55;
+  
+  --color-warning-100: #FFFBEB;
+  --color-warning-700: #B45309;
+  
+  --color-danger-100: #FEF2F2;
+  --color-danger-700: #B91C1C;
+}
+```
+
+### Usage in Components
+
+Use custom colors just like built-in Tailwind colors:
+
+```svelte
+<!-- Primary brand color -->
+<button class="bg-primary-600 text-white hover:bg-primary-700">
+  Click me
+</button>
+
+<!-- Semantic colors -->
+<div class="bg-success-100 text-success-700">Success message</div>
+<div class="bg-warning-100 text-warning-700">Warning message</div>
+<div class="bg-danger-100 text-danger-700">Error message</div>
+```
+
+### Utility Classes
+
+Global utility classes are defined in `app.css`:
+
+```css
+/* Card component */
+.card {
+  @apply p-5 md:p-6 bg-white border border-gray-200 rounded-xl shadow-sm;
+}
+
+/* Difficulty badges */
+.badge-easy {
+  @apply inline-flex px-3 py-1 text-xs font-medium rounded-full 
+         bg-success-100 text-success-700;
+}
+
+.badge-medium {
+  @apply inline-flex px-3 py-1 text-xs font-medium rounded-full 
+         bg-warning-100 text-warning-700;
+}
+
+.badge-hard {
+  @apply inline-flex px-3 py-1 text-xs font-medium rounded-full 
+         bg-danger-100 text-danger-700;
+}
+```
+
+**Why Tailwind v4?**
+- ✅ No config file needed - everything in CSS
+- ✅ Faster build times with new engine
+- ✅ Better TypeScript support
+- ✅ CSS-native approach
+- ✅ Easier to understand and maintain
 
 ---
 

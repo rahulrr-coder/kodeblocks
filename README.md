@@ -79,7 +79,7 @@ cp .env.example .env
 
 # 4. Run database migrations
 # Go to your Supabase dashboard > SQL Editor
-# Run the SQL from supabase-schema.sql
+# Run the SQL from database/schema.sql
 
 # 5. Start development server
 bun run dev
