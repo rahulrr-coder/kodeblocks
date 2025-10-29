@@ -91,242 +91,46 @@ Your app will be running at **http://localhost:5173/** 🎉
 
 ## 🏗️ Architecture
 
-KodeBlocks follows **industry-standard SvelteKit best practices** with a clean, layered architecture.
+KodeBlocks follows **clean architecture principles** with a layered design:
 
-### High-Level Architecture
+- **Routes** - Thin routing layer (3-5 lines per file)
+- **Features** - Page composition and UI logic
+- **Components** - Reusable UI elements organized by feature
+- **Services** - Business logic and data transformations
+- **API** - Database queries and external API calls
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                     User Interface                      │
-│                    (Svelte Components)                  │
-└──────────────────────┬──────────────────────────────────┘
-                       ↓
-┌─────────────────────────────────────────────────────────┐
-│                   Routes (Thin Layer)                   │
-│              • Data loading (+page.server.js)           │
-│              • Rendering (+page.svelte)                 │
-└──────────────────────┬──────────────────────────────────┘
-                       ↓
-┌─────────────────────────────────────────────────────────┐
-│              Feature Pages (lib/features/)              │
-│              • Page composition & layout                │
-│              • UI logic orchestration                   │
-└──────────────────────┬──────────────────────────────────┘
-                       ↓
-┌─────────────────────────────────────────────────────────┐
-│            Services Layer (lib/services/)               │
-│              • Business logic                           │
-│              • Data transformations                     │
-│              • Calculations & formatting                │
-└──────────────────────┬──────────────────────────────────┘
-                       ↓
-┌─────────────────────────────────────────────────────────┐
-│               API Layer (lib/api/)                      │
-│              • Database queries (Supabase)              │
-│              • External API calls                       │
-└──────────────────────┬──────────────────────────────────┘
-                       ↓
-┌─────────────────────────────────────────────────────────┐
-│                  Database (PostgreSQL)                  │
-│              • Users, Problems, Progress                │
-└─────────────────────────────────────────────────────────┘
-```
-
-### Project Structure
-
-```
-kodeblocks/
-├── src/
-│   ├── components/              # UI Components (feature-based)
-│   │   ├── common/             # Shared: Navbar, Footer, DifficultyBadge
-│   │   ├── dashboard/          # StatCard, ProgressBar
-│   │   ├── leaderboard/        # LeaderboardTable
-│   │   ├── login/              # GoogleLoginButton, EmailLoginForm
-│   │   ├── profile/            # Profile-specific components
-│   │   └── tracks/             # ProblemCard
-│   │
-│   ├── lib/
-│   │   ├── features/           # Page compositions (NEW!)
-│   │   │   ├── dashboard/DashboardPage.svelte
-│   │   │   ├── leaderboard/LeaderboardPage.svelte
-│   │   │   ├── login/LoginPage.svelte
-│   │   │   ├── profile/ProfilePage.svelte
-│   │   │   └── tracks/TrackPage.svelte
-│   │   │
-│   │   ├── api/                # Database queries
-│   │   │   ├── problems.js     # Problem queries
-│   │   │   ├── users.js        # User queries
-│   │   │   ├── leaderboard.js  # Leaderboard queries
-│   │   │   └── progress.js     # Progress tracking
-│   │   │
-│   │   ├── services/           # Business logic
-│   │   │   ├── dashboard.js    # Dashboard data logic
-│   │   │   ├── leaderboard.js  # Ranking calculations
-│   │   │   ├── profile.js      # Profile aggregations
-│   │   │   └── tracks.js       # Track progress logic
-│   │   │
-│   │   ├── config/             # Configuration
-│   │   │   ├── tracks.js       # Track definitions
-│   │   │   ├── badges.js       # Badge criteria
-│   │   │   └── constants.js    # App constants
-│   │   │
-│   │   ├── stores.js           # Svelte stores (user, session)
-│   │   ├── supabase.js         # Supabase client setup
-│   │   ├── utils.js            # Utility functions
-│   │   └── mockData.js         # Mock data for development
-│   │
-│   ├── routes/                 # Thin routing layer
-│   │   ├── dashboard/          # +page.server.js, +page.svelte
-│   │   ├── leaderboard/        # +page.server.js, +page.svelte
-│   │   ├── login/              # +page.server.js, +page.svelte
-│   │   ├── profile/            # +page.server.js, +page.svelte
-│   │   ├── tracks/[trackName]/ # +page.server.js, +page.svelte
-│   │   ├── auth/callback/      # OAuth callback
-│   │   ├── +layout.server.js   # Root layout data
-│   │   ├── +layout.svelte      # Root layout UI
-│   │   └── +page.svelte        # Landing page
-│   │
-│   ├── app.css                 # Global styles (Tailwind v4)
-│   ├── app.html                # HTML template
-│   └── hooks.server.js         # Server hooks (auth)
-│
-├── static/                     # Static assets
-├── supabase-schema.sql         # Database schema
-├── package.json                # Dependencies
-├── svelte.config.js            # SvelteKit config
-├── tailwind.config.js          # Tailwind config
-└── vite.config.js              # Vite config
-```
-
-### Key Architectural Principles
-
-#### 1. **Thin Routes** (3-5 lines)
-Routes only handle data loading and rendering. All UI logic lives in feature pages.
-
-```svelte
-<!-- routes/dashboard/+page.svelte -->
-<script>
-  import DashboardPage from '$lib/features/dashboard/DashboardPage.svelte';
-  export let data;
-</script>
-
-<DashboardPage {data} />
-```
-
-#### 2. **Feature-Based Components**
-Components organized by the page/feature they belong to, not by type.
-
-```
-✅ components/dashboard/StatCard.svelte
-✅ components/login/GoogleLoginButton.svelte
-❌ components/StatCard.svelte (flat structure)
-```
-
-#### 3. **Clear Separation of Concerns**
-
-| Layer | Responsibility | Example |
-|-------|---------------|---------|
-| **Routes** | Routing only | Import feature page, pass data |
-| **Features** | Page composition | Assemble components, layout |
-| **Components** | UI presentation | Reusable UI elements |
-| **Services** | Business logic | Calculations, transformations |
-| **API** | Data access | Database queries |
-
-#### 4. **Path Aliases for Clean Imports**
-
-```javascript
-import DashboardPage from '$lib/features/dashboard/DashboardPage.svelte';
-import StatCard from '$components/dashboard/StatCard.svelte';
-import { getDashboardData } from '$lib/services/dashboard.js';
-```
+**For detailed architecture documentation, see [ARCHITECTURE.md](ARCHITECTURE.md)**
 
 ---
 
-## 📊 Database Schema
+## 🎯 Features
 
-### Core Tables
-
-**users** - User profiles and authentication
-```sql
-- id (uuid, pk)
-- email (text)
-- display_name (text)
-- profile_picture (text)
-- batch (text)
-- created_at (timestamp)
-```
-
-**problems** - DSA problems
-```sql
-- id (uuid, pk)
-- title (text)
-- difficulty (Easy/Medium/Hard)
-- points (integer)
-- track (text)
-- problem_url (text)
-- order_index (integer)
-```
-
-**user_progress** - Solved problems tracking
-```sql
-- id (uuid, pk)
-- user_id (uuid, fk)
-- problem_id (uuid, fk)
-- completed_at (timestamp)
-```
-
----
-
-## 🎯 Features in Detail
-
-### Learning Tracks
-- **Foundations** - Core DSA concepts
-- **Interview Prep** - Common interview patterns
-- **Deep Dive** - Advanced algorithms
-- **Problem Solving** - Practice problems
-
-### Gamification System
-- **Points** - Earn based on problem difficulty
-- **Streaks** - Maintain weekly momentum (5+ points/week)
-- **Badges** - Unlock achievements
-- **Leaderboard** - Global and weekly rankings
-
-### Mock Mode
-Development mode with mock data (no Supabase required):
-```bash
-# Set in .env
-VITE_USE_MOCK_DATA=true
-```
+- 📚 **Structured Learning Tracks** - Curated paths for Foundations, Interview Prep, Deep Dives, and Problem Solving
+- 🎮 **Gamification** - Earn points, badges, and maintain weekly streaks
+- 🏆 **Leaderboards** - Global and weekly rankings to stay motivated
+- 📊 **Personal Dashboard** - Visualize progress and achievements
+- 👤 **Profile System** - Track your DSA journey
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! Here's how to get started:
+We welcome contributions! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-1. **Fork the repository**
-2. **Create a feature branch** (`git checkout -b feature/AmazingFeature`)
-3. **Commit your changes** (`git commit -m 'Add AmazingFeature'`)
-4. **Push to the branch** (`git push origin feature/AmazingFeature`)
-5. **Open a Pull Request**
-
-### Development Guidelines
-- Follow the existing architecture patterns
-- Keep routes thin (3-5 lines)
-- Organize components by feature
-- Write meaningful commit messages
-- Test your changes locally
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+**Quick Steps:**
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ---
 
 ## 📚 Documentation
 
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Detailed architecture documentation
-- **[STRUCTURE_SUMMARY.md](STRUCTURE_SUMMARY.md)** - Quick reference guide
-- **[SETUP_GUIDE.md](SETUP_GUIDE.md)** - Step-by-step setup instructions
-- **[DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md)** - Production deployment guide
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Comprehensive architecture guide with code examples
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines and best practices
+- **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** - Community guidelines and standards
 
 ---
 
