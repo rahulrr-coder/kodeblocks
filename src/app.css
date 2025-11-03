@@ -1,48 +1,381 @@
+/* KodeBlocks Theme - Tailwind CSS v4 Configuration */
+
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @theme {
-  --color-primary-50: #F0F7FF;
-  --color-primary-100: #E0EFFF;
-  --color-primary-200: #C0DFFF;
-  --color-primary-300: #A0CFFF;
-  --color-primary-400: #60AFFF;
-  --color-primary-500: #208FFF;
-  --color-primary-600: #0077EE;
-  --color-primary-700: #0066CC;
-  --color-primary-800: #0055AA;
-  --color-primary-900: #004488;
-  --color-primary-950: #003366;
+  /* =================================================================
+     PRIMARY COLOR - Deep Amber/Rust (Unique, Warm, Energetic)
+     ================================================================= */
+  --color-amber-50: #fef3e2;
+  --color-amber-100: #fde7c5;
+  --color-amber-200: #fbcf8b;
+  --color-amber-300: #f9b751;
+  --color-amber-400: #f79f17;
+  --color-amber-500: #d97706;  /* Main brand color */
+  --color-amber-600: #b45309;
+  --color-amber-700: #92400e;
+  --color-amber-800: #78350f;
+  --color-amber-900: #5a2a0a;
+  --color-amber-950: #3c1c07;
+
+  /* =================================================================
+     ACCENT COLOR - Electric Teal (High contrast, modern)
+     ================================================================= */
+  --color-teal-50: #e6fffa;
+  --color-teal-100: #b2ffef;
+  --color-teal-200: #7dfde0;
+  --color-teal-300: #48f9d0;
+  --color-teal-400: #22d3b3;
+  --color-teal-500: #14b8a6;  /* Accent actions */
+  --color-teal-600: #0d9488;
+  --color-teal-700: #0f766e;
+  --color-teal-800: #115e59;
+  --color-teal-900: #134e4a;
+  --color-teal-950: #0a3330;
+
+  /* =================================================================
+     NEUTRALS - Warm grays with slight amber undertone
+     ================================================================= */
+  --color-neutral-50: #fafaf9;
+  --color-neutral-100: #f5f5f2;
+  --color-neutral-200: #e5e5e0;
+  --color-neutral-300: #d4d4cc;
+  --color-neutral-400: #a3a398;
+  --color-neutral-500: #737367;
+  --color-neutral-600: #57574d;
+  --color-neutral-700: #44443c;
+  --color-neutral-800: #292925;
+  --color-neutral-900: #1c1c18;
+  --color-neutral-950: #0f0f0c;
+
+  /* =================================================================
+     SEMANTIC COLORS
+     ================================================================= */
+  --color-success-light: #86efac;
+  --color-success: #22c55e;
+  --color-success-dark: #16a34a;
   
-  --color-success-100: #F0FFF6;
-  --color-success-700: #00AA55;
+  --color-warning-light: #fde68a;
+  --color-warning: #f59e0b;
+  --color-warning-dark: #d97706;
   
-  --color-warning-100: #FFFBEB;
-  --color-warning-700: #B45309;
+  --color-error-light: #fca5a5;
+  --color-error: #ef4444;
+  --color-error-dark: #dc2626;
   
-  --color-danger-100: #FEF2F2;
-  --color-danger-700: #B91C1C;
+  --color-info-light: #93c5fd;
+  --color-info: #3b82f6;
+  --color-info-dark: #2563eb;
+
+  /* =================================================================
+     TRACK IDENTITY COLORS
+     ================================================================= */
+  --color-track-foundations: #8b5cf6;     /* Purple - Building base */
+  --color-track-interview: #3b82f6;       /* Blue - Professional prep */
+  --color-track-deepdive: #10b981;        /* Green - Growth/depth */
+  --color-track-problemsolving: #f43f5e;  /* Rose - Hero track, creative thinking */
+
+  /* =================================================================
+     DIFFICULTY COLORS
+     ================================================================= */
+  --color-difficulty-easy: #22c55e;
+  --color-difficulty-medium: #f59e0b;
+  --color-difficulty-hard: #ef4444;
+
+  /* =================================================================
+     TYPOGRAPHY SYSTEM
+     ================================================================= */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Outfit', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Code', monospace;
+  
+  /* Type Scale - Using 1.25 ratio (Major Third) */
+  --text-xs: 0.64rem;     /* 10.24px */
+  --text-sm: 0.8rem;      /* 12.8px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg: 1.25rem;     /* 20px */
+  --text-xl: 1.563rem;    /* 25px */
+  --text-2xl: 1.953rem;   /* 31.25px */
+  --text-3xl: 2.441rem;   /* 39px */
+  --text-4xl: 3.052rem;   /* 48.8px */
+  --text-5xl: 3.815rem;   /* 61px */
+  --text-6xl: 4.768rem;   /* 76.29px */
+  
+  /* Line Heights */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+  
+  /* Letter Spacing */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+  
+  /* Font Weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* =================================================================
+     SPACING SYSTEM - 8px base unit
+     ================================================================= */
+  --spacing-0: 0px;
+  --spacing-px: 1px;
+  --spacing-0.5: 0.125rem;  /* 2px */
+  --spacing-1: 0.25rem;     /* 4px */
+  --spacing-2: 0.5rem;      /* 8px */
+  --spacing-3: 0.75rem;     /* 12px */
+  --spacing-4: 1rem;        /* 16px */
+  --spacing-5: 1.25rem;     /* 20px */
+  --spacing-6: 1.5rem;      /* 24px */
+  --spacing-8: 2rem;        /* 32px */
+  --spacing-10: 2.5rem;     /* 40px */
+  --spacing-12: 3rem;       /* 48px */
+  --spacing-16: 4rem;       /* 64px */
+  --spacing-20: 5rem;       /* 80px */
+  --spacing-24: 6rem;       /* 96px */
+  --spacing-32: 8rem;       /* 128px */
+
+  /* =================================================================
+     RADIUS SYSTEM - Technical, not bubbly
+     ================================================================= */
+  --radius-none: 0px;
+  --radius-sm: 0.125rem;   /* 2px */
+  --radius-base: 0.25rem;  /* 4px */
+  --radius-md: 0.375rem;   /* 6px */
+  --radius-lg: 0.5rem;     /* 8px */
+  --radius-xl: 0.75rem;    /* 12px */
+  --radius-2xl: 1rem;      /* 16px */
+  --radius-full: 9999px;
+
+  /* =================================================================
+     SHADOWS - Subtle, technical
+     ================================================================= */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+
+  /* =================================================================
+     ANIMATIONS
+     ================================================================= */
+  --animate-duration-fast: 150ms;
+  --animate-duration-base: 200ms;
+  --animate-duration-moderate: 300ms;
+  --animate-duration-slow: 500ms;
+  
+  --animate-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --animate-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --animate-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --animate-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* =================================================================
+     BREAKPOINTS
+     ================================================================= */
+  --screen-sm: 640px;
+  --screen-md: 768px;
+  --screen-lg: 1024px;
+  --screen-xl: 1280px;
+  --screen-2xl: 1536px;
+
+  /* =================================================================
+     Z-INDEX SCALE
+     ================================================================= */
+  --z-0: 0;
+  --z-10: 10;
+  --z-20: 20;
+  --z-30: 30;
+  --z-40: 40;
+  --z-50: 50;
+  --z-dropdown: 1000;
+  --z-modal: 1050;
+  --z-popover: 1100;
+  --z-tooltip: 1150;
 }
 
-/* Global base styles */
+/* =================================================================
+   DARK MODE OVERRIDES
+   ================================================================= */
+@media (prefers-color-scheme: dark) {
+  @theme {
+    /* Dark mode background colors */
+    --color-bg-primary: var(--color-neutral-950);
+    --color-bg-secondary: var(--color-neutral-900);
+    --color-bg-tertiary: var(--color-neutral-800);
+    --color-bg-elevated: var(--color-neutral-800);
+    
+    /* Dark mode text colors */
+    --color-text-primary: var(--color-neutral-50);
+    --color-text-secondary: var(--color-neutral-300);
+    --color-text-tertiary: var(--color-neutral-400);
+    --color-text-inverse: var(--color-neutral-950);
+    
+    /* Dark mode border colors */
+    --color-border-primary: var(--color-neutral-800);
+    --color-border-secondary: var(--color-neutral-700);
+    --color-border-tertiary: var(--color-neutral-600);
+    
+    /* Adjusted shadows for dark mode */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.25);
+    --shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  }
+}
+
+/* Light mode explicit */
+@media (prefers-color-scheme: light) {
+  @theme {
+    /* Light mode background colors */
+    --color-bg-primary: var(--color-neutral-50);
+    --color-bg-secondary: var(--color-neutral-100);
+    --color-bg-tertiary: var(--color-neutral-200);
+    --color-bg-elevated: white;
+    
+    /* Light mode text colors */
+    --color-text-primary: var(--color-neutral-900);
+    --color-text-secondary: var(--color-neutral-700);
+    --color-text-tertiary: var(--color-neutral-600);
+    --color-text-inverse: var(--color-neutral-50);
+    
+    /* Light mode border colors */
+    --color-border-primary: var(--color-neutral-200);
+    --color-border-secondary: var(--color-neutral-300);
+    --color-border-tertiary: var(--color-neutral-400);
+  }
+}
+
+/* =================================================================
+   GLOBAL BASE STYLES
+   ================================================================= */
 body {
-  @apply bg-gray-50 text-gray-900 antialiased;
+  font-family: var(--font-body);
+  @apply bg-neutral-50 text-neutral-900 antialiased;
 }
 
-/* Utility classes for cards */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+code, pre {
+  font-family: var(--font-mono);
+}
+
+/* =================================================================
+   CUSTOM ANIMATIONS
+   ================================================================= */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes scale-up {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 var(--color-amber-500); }
+  50% { box-shadow: 0 0 20px 5px var(--color-amber-400); }
+}
+
+@keyframes streak-flame {
+  0%, 100% { transform: scale(1) rotate(-2deg); }
+  25% { transform: scale(1.05) rotate(2deg); }
+  50% { transform: scale(1.1) rotate(-1deg); }
+  75% { transform: scale(1.05) rotate(1deg); }
+}
+
+/* =================================================================
+   UTILITY CLASSES
+   ================================================================= */
+.animate-fade-in {
+  animation: fade-in var(--animate-duration-base) var(--animate-ease-out);
+}
+
+.animate-slide-up {
+  animation: slide-up var(--animate-duration-moderate) var(--animate-ease-out);
+}
+
+.animate-scale-up {
+  animation: scale-up var(--animate-duration-base) var(--animate-ease-out);
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+.animate-streak-flame {
+  animation: streak-flame 3s ease-in-out infinite;
+}
+
+/* =================================================================
+   CARD UTILITY CLASSES
+   ================================================================= */
 .card {
-  @apply p-5 md:p-6 bg-white border border-gray-200 rounded-xl shadow-sm;
+  @apply p-6 bg-white border border-neutral-200 rounded-xl shadow-sm;
 }
 
-/* Difficulty badge styles */
+.card-elevated {
+  @apply p-6 bg-white border border-neutral-200 rounded-xl shadow-md hover:shadow-lg transition-shadow;
+}
+
+/* =================================================================
+   DIFFICULTY BADGE STYLES
+   ================================================================= */
 .badge-easy {
-  @apply inline-flex px-3 py-1 text-xs font-medium rounded-full bg-success-100 text-success-700;
+  @apply inline-flex items-center px-3 py-1 text-xs font-medium rounded-full;
+  background-color: var(--color-success-light);
+  color: var(--color-success-dark);
 }
 
 .badge-medium {
-  @apply inline-flex px-3 py-1 text-xs font-medium rounded-full bg-warning-100 text-warning-700;
+  @apply inline-flex items-center px-3 py-1 text-xs font-medium rounded-full;
+  background-color: var(--color-warning-light);
+  color: var(--color-warning-dark);
 }
 
 .badge-hard {
-  @apply inline-flex px-3 py-1 text-xs font-medium rounded-full bg-danger-100 text-danger-700;
+  @apply inline-flex items-center px-3 py-1 text-xs font-medium rounded-full;
+  background-color: var(--color-error-light);
+  color: var(--color-error-dark);
+}
+
+/* =================================================================
+   BUTTON STYLES
+   ================================================================= */
+.btn-primary {
+  @apply inline-flex items-center justify-center px-6 py-3 font-semibold rounded-lg;
+  @apply bg-amber-500 text-white hover:bg-amber-600;
+  @apply transition-all duration-200 shadow-sm hover:shadow-md;
+  font-family: var(--font-body);
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center px-6 py-3 font-semibold rounded-lg;
+  @apply bg-teal-500 text-white hover:bg-teal-600;
+  @apply transition-all duration-200 shadow-sm hover:shadow-md;
+  font-family: var(--font-body);
+}
+
+.btn-outline {
+  @apply inline-flex items-center justify-center px-6 py-3 font-semibold rounded-lg;
+  @apply bg-white text-neutral-700 border border-neutral-300 hover:border-neutral-400;
+  @apply transition-all duration-200;
+  font-family: var(--font-body);
 }
 
