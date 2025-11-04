@@ -1,267 +1,228 @@
 <script>
-	import { ArrowRight, Code2, Sparkles, Trophy, Zap, Target, Brain, Rocket } from 'lucide-svelte';
-	import { onMount } from 'svelte';
-	
-	let mounted = false;
-	
-	onMount(() => {
-		mounted = true;
-	});
+	import { ArrowRight, Code2, Flame, CheckCircle2 } from 'lucide-svelte';
 
 	const features = [
 		{
-			icon: Target,
-			title: 'Structured Tracks',
-			description: 'Follow curated learning paths designed to master DSA concepts progressively'
+			icon: '🎯',
+			title: 'Curated Tracks',
+			description: 'Structured learning paths from foundations to advanced problem-solving'
 		},
 		{
-			icon: Brain,
-			title: 'Smart Practice',
-			description: 'Solve problems with intelligent difficulty progression and personalized recommendations'
+			icon: '🔥',
+			title: 'Daily Streaks',
+			description: 'Build consistency with streak tracking and daily coding challenges'
 		},
 		{
-			icon: Trophy,
-			title: 'Compete & Grow',
-			description: 'Join the leaderboard, track your progress, and compete with fellow coders'
-		},
-		{
-			icon: Zap,
-			title: 'Build Consistency',
-			description: 'Develop a daily coding habit with streak tracking and achievement badges'
+			icon: '📊',
+			title: 'Track Progress',
+			description: 'Visual dashboards showing your growth across all problem categories'
 		}
-	];
-
-	const stats = [
-		{ value: '500+', label: 'Practice Problems' },
-		{ value: '15+', label: 'Learning Tracks' },
-		{ value: '1000+', label: 'Active Learners' },
-		{ value: '95%', label: 'Success Rate' }
 	];
 </script>
 
 <svelte:head>
-	<title>KodeBlocks - Master DSA Through Structured Practice</title>
-	<meta name="description" content="Master Data Structures & Algorithms with structured learning paths, smart practice, and consistent daily coding challenges." />
+	<title>KodeBlocks - Master DSA One Block at a Time</title>
+	<meta name="description" content="Structured learning tracks, daily coding challenges, and progress tracking to master Data Structures & Algorithms." />
 </svelte:head>
 
-<div class="min-h-screen bg-linear-to-br from-gray-50 via-primary-50/30 to-gray-50">
+<div class="min-h-screen bg-neutral-50">
 	<!-- Hero Section -->
-	<section class="relative overflow-hidden">
-		<!-- Animated background elements -->
-		<div class="absolute inset-0 overflow-hidden pointer-events-none">
-			<div class="absolute top-20 left-10 w-72 h-72 bg-primary-200/20 rounded-full blur-3xl animate-pulse" style="animation-duration: 4s;"></div>
-			<div class="absolute bottom-20 right-10 w-96 h-96 bg-primary-300/20 rounded-full blur-3xl animate-pulse" style="animation-duration: 6s; animation-delay: 1s;"></div>
+	<section class="relative overflow-hidden bg-linear-to-br from-neutral-50 via-amber-50 to-neutral-50">
+		<!-- Subtle background decoration -->
+		<div class="absolute inset-0 overflow-hidden pointer-events-none opacity-40">
+			<div class="absolute top-20 -right-20 w-96 h-96 bg-amber-200 rounded-full blur-3xl"></div>
+			<div class="absolute -bottom-32 -left-32 w-[600px] h-[600px] bg-teal-100 rounded-full blur-3xl"></div>
 		</div>
 
-		<div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16 sm:pt-24 sm:pb-20">
-			<!-- Main Hero Content -->
-			<div class="text-center space-y-8">
-				<!-- Badge -->
-				<div class="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border border-primary-200 rounded-full shadow-sm 
-					{mounted ? 'animate-fadeIn opacity-100' : 'opacity-0'}"
-					style="animation-delay: 0.1s;">
-					<Sparkles class="w-4 h-4 text-primary-600" />
-					<span class="text-sm font-medium text-primary-700">Your Journey to Coding Mastery Starts Here</span>
+		<div class="relative max-w-6xl mx-auto px-6 lg:px-8 pt-32 pb-24">
+			<div class="max-w-4xl">
+				<!-- Minimal badge -->
+				<div class="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-100 border border-amber-200 rounded-full mb-8 animate-slide-up">
+					<Flame class="w-4 h-4 text-amber-600" />
+					<span class="text-sm font-medium text-amber-800">Track. Practice. Master.</span>
 				</div>
 
-				<!-- Main Heading -->
-				<h1 class="text-5xl sm:text-6xl md:text-7xl font-bold text-gray-900 tracking-tight
-					{mounted ? 'animate-fadeIn opacity-100' : 'opacity-0'}"
-					style="animation-delay: 0.2s;">
-					Master <span class="text-transparent bg-clip-text bg-linear-to-r from-primary-600 to-primary-800">DSA</span><br />
-					One Block at a Time
+				<!-- Hero headline -->
+				<h1 class="text-6xl lg:text-7xl font-bold text-neutral-900 mb-6 tracking-tight animate-slide-up" style="animation-delay: 0.1s;">
+					Master DSA,<br />
+					<span class="text-transparent bg-clip-text bg-linear-to-r from-amber-600 via-amber-500 to-teal-600">One Block at a Time</span>
 				</h1>
 
-				<!-- Subheading -->
-				<p class="max-w-2xl mx-auto text-xl md:text-2xl text-gray-600 leading-relaxed
-					{mounted ? 'animate-fadeIn opacity-100' : 'opacity-0'}"
-					style="animation-delay: 0.3s;">
-					Transform from a coding beginner to a problem-solving expert with structured tracks, daily challenges, and a supportive community.
+				<!-- Hero description -->
+				<p class="text-xl text-neutral-600 mb-10 max-w-2xl leading-relaxed animate-slide-up" style="animation-delay: 0.2s;">
+					Structured learning tracks, consistent practice, and real progress tracking. Your path from beginner to expert starts here.
 				</p>
 
-				<!-- CTA Buttons -->
-				<div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4
-					{mounted ? 'animate-fadeIn opacity-100' : 'opacity-0'}"
-					style="animation-delay: 0.4s;">
+				<!-- CTA -->
+				<div class="flex flex-wrap gap-4 animate-slide-up" style="animation-delay: 0.3s;">
 					<a 
 						href="/login" 
-						class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-linear-to-r from-primary-600 to-primary-700 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden"
+						class="group inline-flex items-center gap-2 px-8 py-4 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
 					>
-						<span class="relative z-10 flex items-center gap-2">
-							Start Learning Free
-							<ArrowRight class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-						</span>
-						<div class="absolute inset-0 bg-linear-to-r from-primary-700 to-primary-800 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+						Start Learning Free
+						<ArrowRight class="w-5 h-5 group-hover:translate-x-1 transition-transform" />
 					</a>
 					<a 
-						href="#features" 
-						class="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300"
+						href="https://github.com/rahulrr-coder/kodeblocks" 
+						target="_blank"
+						rel="noopener noreferrer"
+						class="inline-flex items-center gap-2 px-8 py-4 bg-white text-neutral-700 font-semibold rounded-lg border border-neutral-300 hover:border-neutral-400 transition-all duration-200 hover:scale-105"
 					>
-						Explore Features
+						<Code2 class="w-5 h-5" />
+						View Source
 					</a>
 				</div>
 
-				<!-- Social Proof -->
-				<div class="flex items-center justify-center gap-2 text-sm text-gray-600 pt-4
-					{mounted ? 'animate-fadeIn opacity-100' : 'opacity-0'}"
-					style="animation-delay: 0.5s;">
-					<div class="flex -space-x-2">
-						<div class="w-8 h-8 rounded-full bg-primary-100 border-2 border-white"></div>
-						<div class="w-8 h-8 rounded-full bg-primary-200 border-2 border-white"></div>
-						<div class="w-8 h-8 rounded-full bg-primary-300 border-2 border-white"></div>
+				<!-- Social proof -->
+				<div class="flex items-center gap-6 mt-12 pt-8 border-t border-neutral-200 animate-slide-up" style="animation-delay: 0.4s;">
+					<div class="flex items-center gap-3">
+						<div class="flex -space-x-3">
+							<div class="w-10 h-10 rounded-full bg-linear-to-br from-amber-200 to-amber-300 border-2 border-white"></div>
+							<div class="w-10 h-10 rounded-full bg-linear-to-br from-teal-200 to-teal-300 border-2 border-white"></div>
+							<div class="w-10 h-10 rounded-full bg-linear-to-br from-amber-300 to-teal-200 border-2 border-white"></div>
+						</div>
+						<div class="text-sm text-neutral-600">
+							<span class="font-semibold text-neutral-900">1,000+</span> active learners
+						</div>
 					</div>
-					<span>Join <strong class="text-gray-900">1000+</strong> learners coding daily</span>
+					<div class="h-8 w-px bg-neutral-300"></div>
+					<div class="flex items-center gap-2">
+						<CheckCircle2 class="w-5 h-5 text-teal-600" />
+						<span class="text-sm text-neutral-600">
+							<span class="font-semibold text-neutral-900">500+</span> problems solved daily
+						</span>
+					</div>
 				</div>
-			</div>
-		</div>
-	</section>
-
-	<!-- Stats Section -->
-	<section class="relative py-12 {mounted ? 'animate-fadeIn opacity-100' : 'opacity-0'}" style="animation-delay: 0.6s;">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-				{#each stats as stat, i}
-					<div class="text-center p-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200 hover:shadow-lg hover:scale-105 transition-all duration-300"
-						style="animation-delay: {0.7 + i * 0.1}s;">
-						<div class="text-3xl md:text-4xl font-bold text-primary-600 mb-2">{stat.value}</div>
-						<div class="text-sm md:text-base text-gray-600">{stat.label}</div>
-					</div>
-				{/each}
 			</div>
 		</div>
 	</section>
 
 	<!-- Features Section -->
-	<section id="features" class="py-20 {mounted ? 'animate-fadeIn opacity-100' : 'opacity-0'}" style="animation-delay: 0.8s;">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-			<!-- Section Header -->
+	<section class="py-24 bg-white">
+		<div class="max-w-6xl mx-auto px-6 lg:px-8">
 			<div class="text-center mb-16">
-				<h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-					Everything You Need to <span class="text-transparent bg-clip-text bg-linear-to-r from-primary-600 to-primary-800">Excel</span>
+				<h2 class="text-4xl font-bold text-neutral-900 mb-4">
+					Everything you need to excel
 				</h2>
-				<p class="text-xl text-gray-600 max-w-2xl mx-auto">
-					A comprehensive platform designed to transform your coding journey
+				<p class="text-lg text-neutral-600">
+					Simple, focused, effective
 				</p>
 			</div>
 
-			<!-- Features Grid -->
-			<div class="grid md:grid-cols-2 gap-8">
-				{#each features as feature, i}
-					<div class="group relative p-8 bg-white rounded-2xl shadow-sm border border-gray-200 hover:shadow-2xl hover:scale-105 transition-all duration-500"
-						style="animation-delay: {0.9 + i * 0.1}s;">
-						<!-- Icon -->
-						<div class="inline-flex items-center justify-center w-14 h-14 bg-linear-to-br from-primary-100 to-primary-200 rounded-xl mb-6 group-hover:scale-110 transition-transform duration-300">
-							<svelte:component this={feature.icon} class="w-7 h-7 text-primary-600" />
-						</div>
-						
-						<!-- Content -->
-						<h3 class="text-2xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-						<p class="text-gray-600 leading-relaxed">{feature.description}</p>
-						
-						<!-- Hover gradient -->
-						<div class="absolute inset-0 bg-linear-to-br from-primary-50/50 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+			<div class="grid md:grid-cols-3 gap-8">
+				{#each features as feature}
+					<div class="group p-8 bg-neutral-50 rounded-xl border border-neutral-200 hover:border-amber-300 hover:shadow-lg transition-all duration-300">
+						<div class="text-5xl mb-4">{feature.icon}</div>
+						<h3 class="text-xl font-semibold text-neutral-900 mb-3">
+							{feature.title}
+						</h3>
+						<p class="text-neutral-600 leading-relaxed">
+							{feature.description}
+						</p>
 					</div>
 				{/each}
 			</div>
 		</div>
 	</section>
 
-	<!-- How It Works Section -->
-	<section class="py-20 bg-linear-to-br from-primary-50/50 to-transparent {mounted ? 'animate-fadeIn opacity-100' : 'opacity-0'}" style="animation-delay: 1s;">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+	<!-- Stats Section -->
+	<section class="py-24 bg-linear-to-br from-amber-500 to-amber-600">
+		<div class="max-w-6xl mx-auto px-6 lg:px-8">
 			<div class="text-center mb-16">
-				<h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-					Your Path to Success
+				<h2 class="text-4xl font-bold text-white mb-4">
+					Join a thriving community
 				</h2>
-				<p class="text-xl text-gray-600">Simple steps to master coding</p>
 			</div>
 
-			<div class="grid md:grid-cols-3 gap-8">
-				<!-- Step 1 -->
-				<div class="relative text-center">
-					<div class="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-primary-500 to-primary-700 text-white rounded-2xl text-2xl font-bold mb-6 shadow-lg">
+			<div class="grid md:grid-cols-4 gap-8">
+				<div class="text-center">
+					<div class="text-5xl font-bold text-white mb-2">500+</div>
+					<div class="text-amber-100">Practice Problems</div>
+				</div>
+				<div class="text-center">
+					<div class="text-5xl font-bold text-white mb-2">15+</div>
+					<div class="text-amber-100">Learning Tracks</div>
+				</div>
+				<div class="text-center">
+					<div class="text-5xl font-bold text-white mb-2">1000+</div>
+					<div class="text-amber-100">Active Learners</div>
+				</div>
+				<div class="text-center">
+					<div class="text-5xl font-bold text-white mb-2">95%</div>
+					<div class="text-amber-100">Success Rate</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- How It Works -->
+	<section class="py-24 bg-white">
+		<div class="max-w-6xl mx-auto px-6 lg:px-8">
+			<div class="text-center mb-16">
+				<h2 class="text-4xl font-bold text-neutral-900 mb-4">
+					How it works
+				</h2>
+				<p class="text-lg text-neutral-600">
+					Three simple steps to success
+				</p>
+			</div>
+
+			<div class="grid md:grid-cols-3 gap-12">
+				<div class="relative">
+					<div class="flex items-center justify-center w-14 h-14 bg-amber-500 text-white text-2xl font-bold rounded-lg mb-6">
 						1
 					</div>
-					<h3 class="text-xl font-bold text-gray-900 mb-3">Choose Your Track</h3>
-					<p class="text-gray-600">Select from 15+ curated learning paths tailored to your level and goals</p>
+					<h3 class="text-xl font-semibold text-neutral-900 mb-3">
+						Choose Your Track
+					</h3>
+					<p class="text-neutral-600 leading-relaxed">
+						Select from curated learning paths designed for your level and goals
+					</p>
 				</div>
 
-				<!-- Step 2 -->
-				<div class="relative text-center">
-					<div class="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-primary-500 to-primary-700 text-white rounded-2xl text-2xl font-bold mb-6 shadow-lg">
+				<div class="relative">
+					<div class="flex items-center justify-center w-14 h-14 bg-teal-500 text-white text-2xl font-bold rounded-lg mb-6">
 						2
 					</div>
-					<h3 class="text-xl font-bold text-gray-900 mb-3">Practice Daily</h3>
-					<p class="text-gray-600">Solve problems consistently and build your coding muscle memory</p>
+					<h3 class="text-xl font-semibold text-neutral-900 mb-3">
+						Practice Consistently
+					</h3>
+					<p class="text-neutral-600 leading-relaxed">
+						Solve problems daily, build streaks, and develop your coding intuition
+					</p>
 				</div>
 
-				<!-- Step 3 -->
-				<div class="relative text-center">
-					<div class="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-primary-500 to-primary-700 text-white rounded-2xl text-2xl font-bold mb-6 shadow-lg">
+				<div class="relative">
+					<div class="flex items-center justify-center w-14 h-14 bg-amber-600 text-white text-2xl font-bold rounded-lg mb-6">
 						3
 					</div>
-					<h3 class="text-xl font-bold text-gray-900 mb-3">Track Progress</h3>
-					<p class="text-gray-600">Monitor your growth, earn badges, and compete on the leaderboard</p>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<!-- CTA Section -->
-	<section class="py-20 {mounted ? 'animate-fadeIn opacity-100' : 'opacity-0'}" style="animation-delay: 1.2s;">
-		<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="relative overflow-hidden bg-linear-to-r from-primary-600 to-primary-800 rounded-3xl shadow-2xl p-12 md:p-16 text-center">
-				<!-- Background decoration -->
-				<div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-				<div class="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-				
-				<div class="relative z-10">
-					<Rocket class="w-16 h-16 text-white mx-auto mb-6" />
-					<h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
-						Ready to Transform Your Coding Skills?
-					</h2>
-					<p class="text-xl text-primary-100 mb-8 max-w-2xl mx-auto">
-						Join thousands of developers who are mastering DSA and landing their dream jobs
+					<h3 class="text-xl font-semibold text-neutral-900 mb-3">
+						Track Your Growth
+					</h3>
+					<p class="text-neutral-600 leading-relaxed">
+						Monitor progress, earn achievements, and see your skills improve
 					</p>
-					<a 
-						href="/login" 
-						class="inline-flex items-center justify-center px-10 py-5 text-lg font-semibold text-primary-700 bg-white rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-					>
-						Start Your Journey Now
-						<ArrowRight class="ml-2 w-5 h-5" />
-					</a>
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- Footer CTA -->
-	<section class="py-12 text-center">
-		<a 
-			href="https://github.com/rahulrr-coder/kodeblocks" 
-			target="_blank"
-			rel="noopener noreferrer"
-			class="inline-flex items-center gap-2 text-gray-600 hover:text-primary-600 transition-colors"
-		>
-			<Code2 class="w-5 h-5" />
-			<span class="font-medium">View on GitHub</span>
-		</a>
+	<!-- Final CTA -->
+	<section class="py-24 bg-neutral-900">
+		<div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+			<h2 class="text-4xl lg:text-5xl font-bold text-white mb-6">
+				Ready to start your journey?
+			</h2>
+			<p class="text-xl text-neutral-300 mb-10">
+				Join thousands of developers mastering DSA and landing their dream roles
+			</p>
+			<a 
+				href="/login" 
+				class="inline-flex items-center gap-2 px-10 py-5 bg-amber-500 text-white text-lg font-semibold rounded-lg hover:bg-amber-600 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+			>
+				Get Started Free
+				<ArrowRight class="w-5 h-5" />
+			</a>
+		</div>
 	</section>
 </div>
-
-<style>
-	@keyframes fadeIn {
-		from {
-			opacity: 0;
-			transform: translateY(20px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	.animate-fadeIn {
-		animation: fadeIn 0.8s ease-out forwards;
-	}
-</style>
