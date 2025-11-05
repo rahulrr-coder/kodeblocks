@@ -2,6 +2,7 @@
 	import { createSupabaseLoadClient } from '$lib/supabase.js';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import GoogleLoginButton from '$components/login/GoogleLoginButton.svelte';
 	import EmailLoginForm from '$components/login/EmailLoginForm.svelte';
 
@@ -13,15 +14,49 @@
 
 	onMount(() => {
 		supabase = createSupabaseLoadClient(fetch);
+		
+		// Check if there's an error from the callback
+		const urlParams = new URLSearchParams(window.location.search);
+		if (urlParams.get('error') === 'auth_failed') {
+			error = 'Authentication failed. Please try again.';
+		}
+		
+		// Check if user is already logged in
+		checkSession();
 	});
+
+	async function checkSession() {
+		const { data: { session } } = await supabase.auth.getSession();
+		if (session) {
+			goto('/dashboard');
+		}
+	}
 
 	async function handleGoogleLogin() {
 		loading = true;
 		error = '';
 		
-		await new Promise(resolve => setTimeout(resolve, 500));
-		
-		goto('/dashboard');
+		try {
+			const { data, error: authError } = await supabase.auth.signInWithOAuth({
+				provider: 'google',
+				options: {
+					redirectTo: `${window.location.origin}/auth/callback`,
+					queryParams: {
+						access_type: 'offline',
+						prompt: 'consent',
+					}
+				}
+			});
+
+			if (authError) {
+				error = authError.message;
+				loading = false;
+			}
+			// User will be redirected to Google, so no need to set loading = false
+		} catch (e) {
+			error = 'Failed to initiate Google login. Please try again.';
+			loading = false;
+		}
 	}
 
 	async function handleEmailLogin(e) {
@@ -30,9 +65,22 @@
 		loading = true;
 		error = '';
 		
-		await new Promise(resolve => setTimeout(resolve, 500));
-		
-		goto('/dashboard');
+		try {
+			const { data, error: authError } = await supabase.auth.signInWithPassword({
+				email,
+				password
+			});
+
+			if (authError) {
+				error = authError.message;
+				loading = false;
+			} else {
+				goto('/dashboard');
+			}
+		} catch (e) {
+			error = 'Failed to sign in. Please try again.';
+			loading = false;
+		}
 	}
 
 	async function handleSignUp(e) {
@@ -41,23 +89,42 @@
 		loading = true;
 		error = '';
 		
-		await new Promise(resolve => setTimeout(resolve, 500));
-		
-		goto('/dashboard');
+		try {
+			const { data, error: authError } = await supabase.auth.signUp({
+				email,
+				password,
+				options: {
+					emailRedirectTo: `${window.location.origin}/auth/callback`
+				}
+			});
+
+			if (authError) {
+				error = authError.message;
+				loading = false;
+			} else {
+				error = 'Check your email for the confirmation link!';
+				loading = false;
+			}
+		} catch (e) {
+			error = 'Failed to sign up. Please try again.';
+			loading = false;
+		}
 	}
 </script>
 
-<div class="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-linear-to-b from-primary-50 to-white px-4">
+<div class="min-h-screen flex items-center justify-center bg-linear-to-br from-neutral-50 via-amber-50 to-neutral-50 px-4 py-12">
 	<div class="max-w-md w-full">
-		<div class="card">
-			<div class="text-center mb-8">
-				<h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome to KodeBlocks</h1>
-				<p class="text-gray-600">Start your DSA learning journey</p>
-			</div>
+		<!-- Header -->
+		<div class="text-center mb-8">
+			<h1 class="text-4xl font-bold text-neutral-900 mb-2">Welcome to KodeBlocks</h1>
+			<p class="text-lg text-neutral-600">Start your DSA learning journey</p>
+		</div>
 
+		<!-- Card -->
+		<div class="bg-white rounded-2xl shadow-lg border border-neutral-200 p-8">
 			{#if error}
-				<div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-					{error}
+				<div class="mb-6 p-4 bg-error-light/20 border border-error rounded-lg">
+					<p class="text-sm text-error-dark">{error}</p>
 				</div>
 			{/if}
 
@@ -65,10 +132,10 @@
 
 			<div class="relative my-6">
 				<div class="absolute inset-0 flex items-center">
-					<div class="w-full border-t border-gray-300"></div>
+					<div class="w-full border-t border-neutral-300"></div>
 				</div>
 				<div class="relative flex justify-center text-sm">
-					<span class="px-2 bg-white text-gray-500">Or continue with email</span>
+					<span class="px-4 bg-white text-neutral-500">Or continue with email</span>
 				</div>
 			</div>
 
@@ -80,9 +147,16 @@
 				onSignUp={handleSignUp}
 			/>
 
-			<p class="mt-6 text-center text-sm text-gray-600">
-				By continuing, you agree to our Terms of Service and Privacy Policy
+			<p class="mt-6 text-center text-xs text-neutral-500">
+				By continuing, you agree to our <a href="/terms" class="text-amber-600 hover:text-amber-700">Terms</a> and <a href="/privacy" class="text-amber-600 hover:text-amber-700">Privacy Policy</a>
 			</p>
+		</div>
+
+		<!-- Back to home -->
+		<div class="mt-6 text-center">
+			<a href="/" class="text-sm text-neutral-600 hover:text-amber-600 transition-colors">
+				← Back to home
+			</a>
 		</div>
 	</div>
 </div>
