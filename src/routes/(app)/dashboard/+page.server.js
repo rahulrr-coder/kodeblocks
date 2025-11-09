@@ -2,13 +2,13 @@ import { createSupabaseServerClient } from '$lib/supabase.js';
 
 export const load = async (event) => {
 	const supabase = createSupabaseServerClient(event);
-	const { session, profile } = await event.parent();
+	const { user, profile } = await event.parent();
 	
 	// Fetch current week's progress
 	const { data: weeklyProgress } = await supabase
 		.from('weekly_progress')
 		.select('*')
-		.eq('user_id', session.user.id)
+		.eq('user_id', user.id)
 		.eq('week_start_date', supabase.rpc('get_current_week_start'))
 		.maybeSingle();
 	
