@@ -25,6 +25,29 @@
 	<meta name="description" content="Structured learning tracks, daily coding challenges, and progress tracking to master Data Structures & Algorithms." />
 </svelte:head>
 
+<!-- Public Navigation -->
+<nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-neutral-200">
+	<div class="max-w-6xl mx-auto px-6 lg:px-8">
+		<div class="flex items-center justify-between h-16">
+			<a href="/" class="flex items-center gap-2">
+				<div class="w-8 h-8 bg-linear-to-br from-amber-500 to-teal-600 rounded-lg flex items-center justify-center">
+					<span class="text-white font-bold text-sm">KB</span>
+				</div>
+				<span class="text-xl font-bold text-neutral-900">KodeBlocks</span>
+			</a>
+			
+			<div class="flex items-center gap-4">
+				<a href="/login" class="px-4 py-2 text-sm font-medium text-neutral-700 hover:text-neutral-900 transition-colors">
+					Sign In
+				</a>
+				<a href="/login" class="px-4 py-2 text-sm font-medium bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors">
+					Get Started
+				</a>
+			</div>
+		</div>
+	</div>
+</nav>
+
 <div class="min-h-screen bg-neutral-50">
 	<!-- Hero Section -->
 	<section class="relative overflow-hidden bg-linear-to-br from-neutral-50 via-amber-50 to-neutral-50">
@@ -208,21 +231,71 @@
 	</section>
 
 	<!-- Final CTA -->
-	<section class="py-24 bg-neutral-900">
+	<section class="py-24 bg-linear-to-br from-amber-50 to-orange-50">
 		<div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-			<h2 class="text-4xl lg:text-5xl font-bold text-white mb-6">
+			<h2 class="text-4xl lg:text-5xl font-bold text-neutral-900 mb-6">
 				Ready to start your journey?
 			</h2>
-			<p class="text-xl text-neutral-300 mb-10">
+			<p class="text-xl text-neutral-600 mb-10">
 				Join thousands of developers mastering DSA and landing their dream roles
 			</p>
 			<a 
 				href="/login" 
-				class="inline-flex items-center gap-2 px-10 py-5 bg-amber-500 text-white text-lg font-semibold rounded-lg hover:bg-amber-600 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+				class="inline-flex items-center gap-2 px-10 py-5 bg-amber-600 text-white text-lg font-semibold rounded-lg hover:bg-amber-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
 			>
 				Get Started Free
 				<ArrowRight class="w-5 h-5" />
 			</a>
 		</div>
 	</section>
+	
+	<!-- Footer -->
+	<footer class="bg-neutral-900 text-neutral-300 py-12">
+		<div class="max-w-6xl mx-auto px-6 lg:px-8">
+			<div class="grid md:grid-cols-4 gap-8 mb-8">
+				<div>
+					<div class="flex items-center gap-2 mb-4">
+						<div class="w-8 h-8 bg-linear-to-br from-amber-500 to-teal-600 rounded-lg flex items-center justify-center">
+							<span class="text-white font-bold text-sm">KB</span>
+						</div>
+						<span class="text-lg font-bold text-white">KodeBlocks</span>
+					</div>
+					<p class="text-sm text-neutral-400">
+						Master DSA through structured learning and consistent practice.
+					</p>
+				</div>
+				
+				<div>
+					<h3 class="font-semibold text-white mb-3">Learn</h3>
+					<ul class="space-y-2 text-sm">
+						<li><a href="/tracks" class="hover:text-white transition-colors">Tracks</a></li>
+						<li><a href="/dashboard" class="hover:text-white transition-colors">Dashboard</a></li>
+						<li><a href="/leaderboard" class="hover:text-white transition-colors">Leaderboard</a></li>
+					</ul>
+				</div>
+				
+				<div>
+					<h3 class="font-semibold text-white mb-3">Resources</h3>
+					<ul class="space-y-2 text-sm">
+						<li><a href="https://github.com/rahulrr-coder/kodeblocks" target="_blank" rel="noopener" class="hover:text-white transition-colors">About</a></li>
+						<li><a href="https://github.com/rahulrr-coder/kodeblocks" target="_blank" rel="noopener" class="hover:text-white transition-colors">Blog</a></li>
+						<li><a href="https://github.com/rahulrr-coder/kodeblocks" target="_blank" rel="noopener" class="hover:text-white transition-colors">FAQs</a></li>
+					</ul>
+				</div>
+				
+				<div>
+					<h3 class="font-semibold text-white mb-3">Connect</h3>
+					<ul class="space-y-2 text-sm">
+						<li><a href="https://github.com/rahulrr-coder/kodeblocks" target="_blank" rel="noopener" class="hover:text-white transition-colors">GitHub</a></li>
+						<li><a href="https://twitter.com" target="_blank" rel="noopener" class="hover:text-white transition-colors">Twitter</a></li>
+						<li><a href="mailto:demo@kodeblocks.com" class="hover:text-white transition-colors">Email</a></li>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="border-t border-neutral-800 pt-8 text-center text-sm text-neutral-400">
+				<p>© 2025 KodeBlocks. Built with ❤️ by <a href="https://github.com/rahulrr-coder" target="_blank" rel="noopener" class="text-amber-500 hover:text-amber-400">@RS</a> Rahul RR.</p>
+			</div>
+		</div>
+	</footer>
 </div>
