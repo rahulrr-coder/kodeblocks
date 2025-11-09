@@ -629,7 +629,7 @@ function groupProgressByTrack(progress, allProblems) {
   const trackStats = {};
   
   // Initialize tracks
-  const tracks = ['Foundations', 'Interview Prep', 'Deep Dive', 'Problem Solving'];
+  const tracks = ['Building Blocks', 'Interview Prep', 'Deep Dive', 'Problem Solving'];
   tracks.forEach(track => {
     const trackProblems = allProblems.filter(p => p.track === track);
     const completed = progress.filter(p => p.problems?.track === track);
@@ -860,7 +860,7 @@ CREATE INDEX idx_problems_order ON problems(track, order_index);
 - `title` - Problem name
 - `difficulty` - Easy (1pt), Medium (2pts), Hard (3pts)
 - `points` - Points awarded for completion
-- `track` - Track name (Foundations, Interview Prep, etc.)
+- `track` - Track name (Building Blocks, Interview Prep, Deep Dive, Problem Solving)
 - `problem_url` - External link (LeetCode, etc.)
 - `order_index` - Display order within track
 - `created_at` - Problem creation timestamp

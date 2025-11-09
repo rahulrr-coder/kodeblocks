@@ -31,7 +31,7 @@ Built by students, for students. A FOSS project welcoming all contributors.
 
 ## ✨ Features
 
-- 📚 **Structured Learning Tracks** - Curated paths for Foundations, Interview Prep, Deep Dives, and Problem Solving
+- 📚 **Structured Learning Tracks** - Curated paths for Building Blocks, Interview Prep, Deep Dive, and Problem Solving
 - 🎮 **Gamification** - Earn badges, maintain weekly streaks, and track progress  
 - 🏆 **Leaderboards** - Friendly competition to stay motivated
 - 📊 **Personal Dashboard** - Visualize your progress and achievements
@@ -105,7 +105,7 @@ KodeBlocks follows **clean architecture principles** with a layered design:
 
 ## 🎯 Features
 
-- 📚 **Structured Learning Tracks** - Curated paths for Foundations, Interview Prep, Deep Dives, and Problem Solving
+- 📚 **Structured Learning Tracks** - Curated paths for Building Blocks, Interview Prep, Deep Dive, and Problem Solving
 - 🎮 **Gamification** - Earn points, badges, and maintain weekly streaks
 - 🏆 **Leaderboards** - Global and weekly rankings to stay motivated
 - 📊 **Personal Dashboard** - Visualize progress and achievements
