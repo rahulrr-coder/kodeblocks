@@ -12,7 +12,7 @@
 	let loading = false;
 	let error = '';
 
-	onMount(() => {
+	onMount(async () => {
 		supabase = createSupabaseLoadClient(fetch);
 		
 		// Check if there's an error from the callback
@@ -21,16 +21,12 @@
 			error = 'Authentication failed. Please try again.';
 		}
 		
-		// Check if user is already logged in
-		checkSession();
-	});
-
-	async function checkSession() {
-		const { data: { session } } = await supabase.auth.getSession();
-		if (session) {
+		// Check if user is already logged in - use getUser() for security
+		const { data: { user } } = await supabase.auth.getUser();
+		if (user) {
 			goto('/dashboard');
 		}
-	}
+	});
 
 	async function handleGoogleLogin() {
 		loading = true;
