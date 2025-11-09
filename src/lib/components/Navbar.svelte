@@ -27,7 +27,12 @@
 	];
 	
 	function isActive(path) {
-		return currentPath === path || currentPath.startsWith(path + '/');
+		// Exact match for the path or if it's a sub-route
+		if (currentPath === path) return true;
+		// For sub-routes like /tracks/foundations, match if starts with path + /
+		if (path !== '/dashboard' && currentPath.startsWith(path + '/')) return true;
+		// For dashboard, only match exact path to avoid false positives
+		return false;
 	}
 	
 	function toggleDropdown() {
