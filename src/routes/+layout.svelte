@@ -3,8 +3,8 @@
 	import { invalidate } from '$app/navigation';
 	import { user, session } from '$lib/stores.js';
 	import { createSupabaseLoadClient } from '$lib/supabase.js';
-	import Navbar from '$components/common/Navbar.svelte';
-	import Footer from '$components/common/Footer.svelte';
+	import Navbar from '$components/Navbar.svelte';
+	import Footer from '$components/Footer.svelte';
 	import '../app.css';
 
 	export let data;

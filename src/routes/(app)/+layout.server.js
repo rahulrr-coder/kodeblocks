@@ -29,16 +29,16 @@ export const load = async (event) => {
 	if (cleanUsername && cleanUsername.includes('@')) {
 		// If username is full email, take part before @
 		cleanUsername = cleanUsername.split('@')[0];
-	} else if (!cleanUsername && session.user.email) {
+	} else if (!cleanUsername && user.email) {
 		// Fallback to email if no username
-		cleanUsername = session.user.email.split('@')[0];
+		cleanUsername = user.email.split('@')[0];
 	}
 	
 	// Remove dots and make it cleaner
 	cleanUsername = cleanUsername?.replace(/\./g, '') || 'user';
 	
 	return {
-		session,
+		user,
 		profile: {
 			...profile,
 			username: cleanUsername // Override with clean username
