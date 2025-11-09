@@ -1,14 +1,15 @@
 <script>
-	import { Trophy, Code2, Flame, Award, Target, TrendingUp } from 'lucide-svelte';
+	import { Trophy, Code2, Flame, Award, Target } from 'lucide-svelte';
 	import StatCard from '$lib/components/dashboard/StatCard.svelte';
 	import ProgressBar from '$lib/components/dashboard/ProgressBar.svelte';
-	import { TRACK_INFO } from '$lib/config/tracks.js';
+	import { getTrackInfo } from '$lib/config/tracks.js';
+	import { trackDbToUrl } from '$lib/utils.js';
 	
 	export let data;
 	
 	const { profile, weeklyProgress } = data;
 	
-	// Mock data for demonstration - replace with real data from props
+	// Dashboard data
 	const dashboardData = {
 		totalSolved: profile?.total_problems_solved || 0,
 		totalPoints: profile?.total_bloks_lifetime || 0,
@@ -21,23 +22,6 @@
 			'Problem Solving': { completed: 0, total: 80 }
 		}
 	};
-	
-	function getTrackInfo(trackName) {
-		return TRACK_INFO[trackName] || { color: 'blue', icon: '📚', description: 'Track' };
-	}
-	
-	// Helper to get color classes
-	function getColorClass(color) {
-		const colorMap = {
-			'blue': 'bg-blue-500',
-			'green': 'bg-green-500',
-			'purple': 'bg-purple-500',
-			'yellow': 'bg-yellow-500',
-			'amber': 'bg-amber-500',
-			'teal': 'bg-teal-500'
-		};
-		return colorMap[color] || 'bg-blue-500';
-	}
 </script>
 
 <svelte:head>
@@ -47,20 +31,18 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 	<!-- Welcome Header -->
 	<div class="animate-slide-up">
-		<h1 class="text-4xl md:text-5xl font-bold text-neutral-900">
-			Welcome back, <span class="text-amber-600">@{profile?.username || 'User'}</span> 👋
+		<h1 class="text-3xl font-bold text-neutral-900">
+			Welcome back, {profile?.display_name || profile?.username || 'User'}! 👋
 		</h1>
-		<p class="text-lg text-neutral-600 mt-2">Keep up the great work! Here's your progress overview.</p>
 	</div>
 	
-	<!-- Stats Grid -->
+	<!-- Stats Grid - Using StatCard Component -->
 	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-slide-up" style="animation-delay: 100ms;">
 		<StatCard 
 			title="Problems Solved"
 			value={dashboardData.totalSolved}
 			icon={Code2}
 			iconColor="teal"
-			subtitle="Keep going!"
 		/>
 		
 		<StatCard 
@@ -68,7 +50,6 @@
 			value={dashboardData.totalPoints}
 			icon={Trophy}
 			iconColor="amber"
-			subtitle="Lifetime Bloks"
 		/>
 		
 		<StatCard 
@@ -76,7 +57,6 @@
 			value={dashboardData.currentWeekPoints}
 			icon={Flame}
 			iconColor="amber"
-			subtitle="Weekly Bloks"
 		/>
 		
 		<StatCard 
@@ -84,55 +64,56 @@
 			value={dashboardData.streakWeeks}
 			icon={Award}
 			iconColor="teal"
-			subtitle="Consecutive weeks"
 		/>
+	</div>
+	
+	<!-- Section Header for Tracks -->
+	<div class="animate-slide-up" style="animation-delay: 150ms;">
+		<p class="text-lg text-neutral-600">Keep up the great work! Here's your progress overview.</p>
 	</div>
 	
 	<!-- Main Content Grid -->
 	<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-slide-up" style="animation-delay: 200ms;">
 		<!-- Column 1: Your Tracks (2/3 width) -->
 		<div class="lg:col-span-2 space-y-6">
-			<div class="flex items-center justify-between">
-				<h2 class="text-3xl font-bold text-neutral-900">Your Tracks</h2>
-				<a href="/tracks" class="text-amber-600 hover:text-amber-700 font-semibold flex items-center gap-2 transition-colors">
-					View All
-					<TrendingUp class="w-5 h-5" />
-				</a>
-			</div>
+			<h2 class="text-3xl font-bold text-neutral-900">Your Tracks</h2>
 			
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 				{#each Object.entries(dashboardData.tracks) as [trackName, trackData]}
 					{@const trackInfo = getTrackInfo(trackName)}
 					<div class="card hover:shadow-lg transition-shadow bg-white rounded-xl p-6 border border-neutral-200">
 						<div class="flex items-start gap-3 mb-4">
-							<span class="text-4xl">{trackInfo.icon}</span>
+							<span class="text-4xl">{trackInfo?.icon || '📚'}</span>
 							<div class="flex-1">
 								<h3 class="text-xl font-bold text-neutral-900 mb-1">{trackName}</h3>
-								<p class="text-sm text-neutral-600">{trackInfo.description}</p>
+								<p class="text-sm text-neutral-600">{trackInfo?.description || 'Track'}</p>
 							</div>
 						</div>
 						
 						<ProgressBar 
 							value={trackData.completed}
 							max={trackData.total}
-							color={trackInfo.color}
+							color={trackInfo?.color || 'blue'}
 							label="Progress"
 						/>
 						
-						<a 
-							href="/tracks/{trackName.toLowerCase().replace(' ', '-')}"
-							class="mt-4 block w-full text-center py-3 px-4 bg-neutral-900 text-white font-semibold rounded-lg hover:bg-neutral-800 transition-colors"
-						>
-							Continue Learning →
-						</a>
+						<div class="mt-4">
+							<a 
+								href="/tracks/{trackDbToUrl(trackName)}"
+								class="text-sm font-semibold text-amber-600 hover:text-amber-700 transition-colors"
+							>
+								Continue Learning &rarr;
+							</a>
+						</div>
 					</div>
 				{/each}
 			</div>
 		</div>
 		
-		<!-- Column 2: Weekly Streak (1/3 width) -->
-		<div class="lg:col-span-1">
-			<div class="card bg-linear-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-8 sticky top-8">
+		<!-- Column 2: Weekly Streak + Achievements (1/3 width) -->
+		<div class="lg:col-span-1 space-y-6">
+			<!-- Weekly Streak Card -->
+			<div class="card bg-linear-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-8">
 				<div class="text-center space-y-6">
 					<div class="flex items-center justify-center gap-2">
 						<Target class="w-6 h-6 text-amber-600" />
@@ -170,6 +151,17 @@
 							{/if}
 						</div>
 					</div>
+				</div>
+			</div>
+			
+			<!-- Achievements Card -->
+			<div class="card space-y-4 animate-slide-up" style="animation-delay: 400ms;">
+				<h3 class="text-xl font-semibold text-neutral-900">Achievements</h3>
+				<p class="text-neutral-600">You're just getting started! Solve more problems to unlock new badges.</p>
+				<div class="flex space-x-4">
+					<div class="w-16 h-16 bg-neutral-200 rounded-full flex items-center justify-center text-3xl opacity-50" title="Locked">🎯</div>
+					<div class="w-16 h-16 bg-neutral-200 rounded-full flex items-center justify-center text-3xl opacity-50" title="Locked">🔥</div>
+					<div class="w-16 h-16 bg-neutral-200 rounded-full flex items-center justify-center text-3xl opacity-50" title="Locked">⭐</div>
 				</div>
 			</div>
 		</div>
