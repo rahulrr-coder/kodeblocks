@@ -16,7 +16,7 @@
 		currentWeekPoints: weeklyProgress?.bloks_earned || 0,
 		streakWeeks: profile?.consecutive_qualified_weeks || 0,
 		tracks: {
-			'Foundations': { completed: 0, total: 100 },
+			'Building Blocks': { completed: 0, total: 100 },
 			'Interview Prep': { completed: 0, total: 75 },
 			'Deep Dive': { completed: 0, total: 50 },
 			'Problem Solving': { completed: 0, total: 80 }
