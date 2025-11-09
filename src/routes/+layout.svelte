@@ -3,8 +3,6 @@
 	import { invalidate } from '$app/navigation';
 	import { user, session } from '$lib/stores.js';
 	import { createSupabaseLoadClient } from '$lib/supabase.js';
-	import Navbar from '$components/Navbar.svelte';
-	import Footer from '$components/Footer.svelte';
 	import '../app.css';
 
 	export let data;
@@ -37,30 +35,11 @@
 			return () => subscription?.unsubscribe?.();
 		}
 	});
-
-	async function handleLogout() {
-		if (isMockMode) {
-			window.location.href = '/';
-			return;
-		}
-		
-		if (supabase) {
-			await supabase.auth.signOut();
-			window.location.href = '/';
-		}
-	}
 </script>
 
 <svelte:head>
 	<title>KodeBlocks - DSA Learning Platform</title>
 </svelte:head>
 
-<div class="min-h-screen flex flex-col">
-	<Navbar user={data.user} onLogout={handleLogout} />
-
-	<main class="flex-1">
-		<slot />
-	</main>
-
-	<Footer />
-</div>
+<!-- Root layout: just global styles and slot, no navbar/footer -->
+<slot />
