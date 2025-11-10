@@ -53,8 +53,8 @@ export function formatDate(dateString) {
  */
 export function getTrackDescription(trackName) {
 	const descriptions = {
-		foundations: {
-			title: 'Foundations',
+		'building-blocks': {
+			title: 'Building Blocks',
 			description:
 				'Master the fundamental data structures and algorithms. Build a strong foundation for problem-solving.',
 		},
@@ -83,7 +83,7 @@ export function getTrackDescription(trackName) {
  */
 export function trackUrlToDb(urlTrack) {
 	const mapping = {
-		foundations: 'Foundations',
+		'building-blocks': 'Building Blocks',
 		'interview-prep': 'Interview Prep',
 		'deep-dive': 'Deep Dive',
 		'problem-solving': 'Problem Solving',
@@ -96,7 +96,7 @@ export function trackUrlToDb(urlTrack) {
  */
 export function trackDbToUrl(dbTrack) {
 	const mapping = {
-		Foundations: 'foundations',
+		'Building Blocks': 'building-blocks',
 		'Interview Prep': 'interview-prep',
 		'Deep Dive': 'deep-dive',
 		'Problem Solving': 'problem-solving',
