@@ -98,7 +98,9 @@ export function createSupabaseLoadClient(fetch) {
 					return cookie?.split('=')[1];
 				},
 				set(key, value, options) {
-					document.cookie = `${key}=${value}; path=${options?.path || '/'}; max-age=${options?.maxAge || 31536000}; SameSite=Lax; Secure`;
+					// Use 180 days (15,552,000 seconds) for longer session persistence
+					const maxAge = options?.maxAge || 15552000;
+					document.cookie = `${key}=${value}; path=${options?.path || '/'}; max-age=${maxAge}; SameSite=Lax; Secure`;
 				},
 				remove(key, options) {
 					document.cookie = `${key}=; path=${options?.path || '/'}; max-age=0`;
@@ -119,10 +121,19 @@ export function createSupabaseServerClient(event) {
 		cookies: {
 			get: (key) => event.cookies.get(key),
 			set: (key, value, options) => {
-				event.cookies.set(key, value, { ...options, path: '/' });
+				try {
+					event.cookies.set(key, value, { ...options, path: '/' });
+				} catch (error) {
+					// Ignore errors when response has already been sent
+					// This happens during token refresh after response is generated
+				}
 			},
 			remove: (key, options) => {
-				event.cookies.delete(key, { ...options, path: '/' });
+				try {
+					event.cookies.delete(key, { ...options, path: '/' });
+				} catch (error) {
+					// Ignore errors when response has already been sent
+				}
 			},
 		},
 	});
