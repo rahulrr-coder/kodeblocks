@@ -5,15 +5,18 @@
 
 import { getProblemsByTrack, getTrackByName } from '$lib/api/problems.js';
 import { redirect } from '@sveltejs/kit';
+import { createSupabaseServerClient } from '$lib/supabase.js';
 
-export const load = async ({ params, locals: { supabase, getUser } }) => {
+export const load = async (event) => {
+	const supabase = createSupabaseServerClient(event);
+	
 	// Ensure user is authenticated
-	const user = await getUser();
-	if (!user) {
+	const { data: { user }, error } = await supabase.auth.getUser();
+	if (error || !user) {
 		throw redirect(303, '/login');
 	}
 
-	const trackName = params.trackName;
+	const trackName = event.params.trackName;
 
 	try {
 		// Fetch track info and problems in parallel
