@@ -16,10 +16,10 @@
  * @type {Object.<string, TrackInfo>}
  */
 export const TRACK_INFO = {
-	'Foundations': {
+	'Building Blocks': {
 		color: 'blue',
-		icon: '📚',
-		description: 'Core DSA fundamentals and basics'
+		icon: '🧱',
+		description: 'Master DSA fundamentals and basics'
 	},
 	'Interview Prep': {
 		color: 'green',
@@ -28,8 +28,8 @@ export const TRACK_INFO = {
 	},
 	'Deep Dive': {
 		color: 'purple',
-		icon: '🎯',
-		description: 'Advanced topics and algorithms'
+		icon: '�',
+		description: 'Advanced algorithms and complex topics'
 	},
 	'Problem Solving': {
 		color: 'yellow',
