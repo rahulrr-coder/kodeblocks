@@ -1,6 +1,7 @@
 <script>
 	import Header from '$lib/components/common/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import Toast from '$lib/components/common/Toast.svelte';
 	import { page } from '$app/stores';
 	
 	export let data;
@@ -17,4 +18,5 @@
 	</main>
 	
 	<Footer />
+	<Toast />
 </div>

@@ -5,10 +5,26 @@
 	import StatCard from '$lib/components/dashboard/StatCard.svelte';
 	import ProgressBar from '$lib/components/dashboard/ProgressBar.svelte';
 	import { getTrackInfo } from '$lib/config/tracks.js';
+	import { getCurrentWeekStart } from '$lib/utils/dateUtils.js';
 	
 	export let data;
 	
-	const { profile, weeklyProgress, tracks, user } = data;
+	const { profile, recentWeeks, recentSubmissions, tracks, user } = data;
+	
+	// Calculate current week start in BROWSER's timezone
+	const currentWeekStart = getCurrentWeekStart();
+	console.log('Dashboard (Client) - Current week start:', currentWeekStart);
+	console.log('Dashboard (Client) - Available weeks:', recentWeeks.map(w => w.week_start_date));
+	console.log('Dashboard (Client) - Recent submissions:', recentSubmissions);
+	
+	// Find the matching week from the data
+	const weeklyProgress = recentWeeks?.find(w => w.week_start_date === currentWeekStart) || {
+		bloks_earned: 0,
+		problems_solved: 0,
+		qualified: false
+	};
+	
+	console.log('Dashboard (Client) - Matched weekly progress:', weeklyProgress);
 	
 	// Normalize track names for URL mapping
 	const normalizeTrackName = (name) => {
@@ -76,6 +92,33 @@
 	const filteredTracks = Array.from(trackMap.values())
 		.sort((a, b) => a.order - b.order);
 	
+	// Format timestamp for recent activity
+	function formatTimeAgo(timestamp) {
+		if (!timestamp) return '';
+		const date = new Date(timestamp);
+		const now = new Date();
+		const diffMs = now - date;
+		const diffMins = Math.floor(diffMs / 60000);
+		const diffHours = Math.floor(diffMins / 60);
+		const diffDays = Math.floor(diffHours / 24);
+
+		if (diffMins < 1) return 'Just now';
+		if (diffMins < 60) return `${diffMins}m ago`;
+		if (diffHours < 24) return `${diffHours}h ago`;
+		if (diffDays < 7) return `${diffDays}d ago`;
+		return date.toLocaleDateString();
+	}
+	
+	// Get difficulty badge color
+	function getDifficultyColor(difficulty) {
+		switch(difficulty?.toLowerCase()) {
+			case 'easy': return 'bg-green-100 text-green-700';
+			case 'medium': return 'bg-yellow-100 text-yellow-700';
+			case 'hard': return 'bg-red-100 text-red-700';
+			default: return 'bg-gray-100 text-gray-700';
+		}
+	}
+	
 	// Dashboard data
 	const dashboardData = {
 		totalSolved: profile?.total_problems_solved || 0,
@@ -134,10 +177,10 @@
 					
 					<div class="py-6">
 						<div class="flex items-center justify-center gap-3 mb-2">
-							<h2 class="text-6xl font-bold text-amber-600">{dashboardData.streakWeeks}</h2>
-							<span class="text-5xl animate-streak-flame">🔥</span>
+							<h2 class="text-6xl font-bold text-amber-600">{dashboardData.currentWeekPoints}</h2>
+							<span class="text-5xl">🔥</span>
 						</div>
-						<p class="text-lg font-semibold text-neutral-700">Week Streak</p>
+						<p class="text-lg font-semibold text-neutral-700">Bloks This Week</p>
 					</div>
 					
 					<div class="space-y-4">
@@ -195,27 +238,57 @@
 				</a>
 			</div>
 			
-			<!-- Recent Activity Placeholder -->
+			<!-- Recent Activity -->
 			<div class="bg-white rounded-xl p-8 border-2 border-neutral-200">
 				<h3 class="text-2xl font-bold text-neutral-900 mb-4">Recent Activity</h3>
-				<p class="text-neutral-600">Your recent problem submissions will appear here.</p>
+				
+				{#if recentSubmissions && recentSubmissions.length > 0}
+					<div class="space-y-3">
+						{#each recentSubmissions as submission, i}
+							<div 
+								class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+								in:fly={{ x: -20, duration: 300, delay: i * 50, easing: cubicOut }}
+							>
+								<div class="flex items-center gap-4 flex-1">
+									<!-- Track Icon -->
+									<div class="text-2xl">
+										{submission.problems?.tracks?.icon || '📚'}
+									</div>
+									
+									<!-- Problem Info -->
+									<div class="flex-1 min-w-0">
+										<div class="flex items-center gap-2 flex-wrap">
+											<h4 class="font-semibold text-neutral-900 truncate">
+												{submission.problems?.title || 'Problem'}
+											</h4>
+											<span class="px-2 py-0.5 text-xs font-semibold rounded {getDifficultyColor(submission.problems?.difficulty)}">
+												{submission.problems?.difficulty || 'N/A'}
+											</span>
+										</div>
+										<div class="flex items-center gap-2 text-sm text-neutral-500 mt-1">
+											<span>{submission.problems?.tracks?.display_name || 'Track'}</span>
+											<span>•</span>
+											<span>{formatTimeAgo(submission.submitted_at)}</span>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Bloks Earned -->
+								<div class="flex items-center gap-1 px-3 py-1.5 bg-amber-100 text-amber-700 rounded-full font-bold text-sm">
+									<span>🧱</span>
+									<span>+{submission.bloks_earned}</span>
+								</div>
+							</div>
+						{/each}
+					</div>
+				{:else}
+					<div class="text-center py-8">
+						<div class="text-6xl mb-4">🎯</div>
+						<p class="text-neutral-600 mb-2">No activity yet!</p>
+						<p class="text-sm text-neutral-500">Start solving problems to see your progress here.</p>
+					</div>
+				{/if}
 			</div>
 		</div>
 	</div>
 </div>
-
-<style>
-	@keyframes streak-flame {
-		0%, 100% {
-			transform: scale(1) rotate(-5deg);
-		}
-		50% {
-			transform: scale(1.1) rotate(5deg);
-		}
-	}
-	
-	.animate-streak-flame {
-		animation: streak-flame 0.6s ease-in-out infinite;
-	}
-</style>
-

@@ -4,11 +4,11 @@
 	import ProgressOverview from '$lib/components/tracks/ProgressOverview.svelte';
 	import FilterBar from '$lib/components/tracks/FilterBar.svelte';
 	import SectionAccordion from '$lib/components/tracks/SectionAccordion.svelte';
-	import CooldownTimer from '$lib/components/tracks/CooldownTimer.svelte';
 	import { groupBySection, applyFiltersAndSort, getSectionOrder } from '$lib/utils/filterUtils.js';
 	import { canComplete as checkCooldown, formatCooldownTime } from '$lib/utils/cooldownUtils.js';
 	import { markProblemComplete, updateLastCompletedAt } from '$lib/api/submissions.js';
 	import { createSupabaseLoadClient } from '$lib/supabase.js';
+	import { toast } from '$lib/stores/toast.js';
 
 	export let data;
 
@@ -26,6 +26,9 @@
 	let canCompleteNow = true;
 	let cooldownTimeString = '';
 	let cooldownInterval;
+	
+	// Loading state - track which specific problem is being submitted
+	let submittingProblemId = null;
 
 	// Expanded sections state
 	let expandedSections = new Set();
@@ -73,20 +76,27 @@
 	async function handleProblemComplete(event) {
 		const problemId = event.detail;
 
+		if (submittingProblemId) {
+			return; // Prevent double submissions
+		}
+
 		if (!canCompleteNow) {
-			alert(`⏱️ Cooldown active. Please wait ${cooldownTimeString} before marking another problem complete.`);
+			toast.info(`⏱️ Take a quick break! You can submit again in ${cooldownTimeString}.\n\nCome back stronger! 💪`, 5000);
 			return;
 		}
 
 		const problem = problems.find((p) => p.id === problemId);
 		if (!problem) return;
 
+		submittingProblemId = problemId;
+
 		try {
 			const supabase = createSupabaseLoadClient(fetch);
 			const { data: { user } } = await supabase.auth.getUser();
 
 			if (!user) {
-				alert('You must be logged in to mark problems complete');
+				toast.error('You must be logged in to mark problems complete');
+				submittingProblemId = null;
 				return;
 			}
 
@@ -100,30 +110,26 @@
 			lastCompletedAt = new Date().toISOString();
 			updateCooldownStatus();
 
-			// Show success message
+			// Show success message with animation
 			showSuccessMessage(problem);
 
-			// Refresh data from server
+			// Refresh data from server to update dashboard and leaderboard
 			await invalidateAll();
 
 		} catch (error) {
 			console.error('Error marking problem complete:', error);
-			if (error.message?.includes('duplicate')) {
-				alert('You have already completed this problem!');
+			if (error.message?.includes('duplicate') || error.message?.includes('unique')) {
+				toast.info('You have already completed this problem! 🎯');
 			} else {
-				alert('Failed to mark problem complete. Please try again.');
+				toast.error('Failed to mark problem complete. Please try again.');
 			}
+		} finally {
+			submittingProblemId = null;
 		}
 	}
 
 	function showSuccessMessage(problem) {
-		// Simple success alert (can be replaced with toast/notification later)
-		const message = `🎉 Great job! You earned ${problem.bloks} Bloks!\n\n"${problem.title}" marked as complete.`;
-		alert(message);
-	}
-
-	function handleCooldownExpire() {
-		updateCooldownStatus();
+		toast.success(`🎉 Awesome! You earned ${problem.bloks} Bloks!\n\n"${problem.title}" marked as complete. Keep it up! 🚀`, 5000);
 	}
 
 	// React to data changes
@@ -161,11 +167,6 @@
 	<!-- Progress Overview -->
 	<ProgressOverview {track} {stats} {totalBloksEarned} />
 
-	<!-- Cooldown Timer -->
-	{#if !canCompleteNow}
-		<CooldownTimer {lastCompletedAt} onExpire={handleCooldownExpire} />
-	{/if}
-
 	<!-- Filter Bar -->
 	<FilterBar {filters} on:change={handleFilterChange} />
 
@@ -185,8 +186,8 @@
 					sectionName={section}
 					problems={groupedProblems[section]}
 					isExpanded={expandedSections.has(section)}
-					canComplete={canCompleteNow}
-					cooldownTime={cooldownTimeString}
+					{submittingProblemId}
+					on:toggle={(e) => toggleSection(e.detail)}
 					on:complete={handleProblemComplete}
 				/>
 			{/each}

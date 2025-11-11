@@ -8,78 +8,33 @@ export const load = async (event) => {
 	const supabase = createSupabaseServerClient(event);
 	const { user } = await event.parent();
 	
-	// Get current week's start date (Monday at 00:00:00)
-	const now = new Date();
-	const dayOfWeek = now.getDay();
-	const diff = now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-	const currentWeekStart = new Date(now.setDate(diff));
-	currentWeekStart.setHours(0, 0, 0, 0);
-	
-	// Format as YYYY-MM-DD
-	const weekStartStr = currentWeekStart.toISOString().split('T')[0];
-	
-	// Get top 10 users for current week
-	const { data: topUsers, error: topError } = await supabase
+	// Fetch recent weeks data (last 2 weeks to handle timezone differences)
+	// Client will determine which week is "current" based on browser timezone
+	const { data: allRecentProgress, error: allError } = await supabase
 		.from('weekly_progress')
 		.select(`
 			user_id,
+			week_start_date,
 			bloks_earned,
 			problems_solved,
 			qualified,
-			user_profiles!inner (
+			user_profiles (
 				username,
 				display_name,
 				consecutive_qualified_weeks
 			)
 		`)
-		.eq('week_start_date', weekStartStr)
-		.order('bloks_earned', { ascending: false })
-		.limit(10);
+		.gte('week_start_date', new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
+		.gt('bloks_earned', 0)
+		.order('bloks_earned', { ascending: false });
 	
-	if (topError) {
-		console.error('Error fetching leaderboard:', topError);
-	}
-	
-	// Get current user's rank if not in top 10
-	let userRank = null;
-	if (user?.id) {
-		const { data: allUsers } = await supabase
-			.from('weekly_progress')
-			.select('user_id, bloks_earned')
-			.eq('week_start_date', weekStartStr)
-			.order('bloks_earned', { ascending: false });
-		
-		const userIndex = allUsers?.findIndex(u => u.user_id === user.id);
-		if (userIndex !== -1 && userIndex >= 10) {
-			// Get user's data
-			const { data: userData } = await supabase
-				.from('weekly_progress')
-				.select(`
-					user_id,
-					bloks_earned,
-					problems_solved,
-					qualified,
-					user_profiles!inner (
-						username,
-						display_name,
-						consecutive_qualified_weeks
-					)
-				`)
-				.eq('week_start_date', weekStartStr)
-				.eq('user_id', user.id)
-				.single();
-			
-			userRank = {
-				rank: userIndex + 1,
-				...userData
-			};
-		}
+	if (allError) {
+		console.error('Error fetching leaderboard:', allError);
 	}
 	
 	return {
-		leaderboard: topUsers || [],
-		userRank,
-		weekStart: weekStartStr
+		allRecentProgress: allRecentProgress || [],
+		currentUserId: user?.id
 	};
 };
 

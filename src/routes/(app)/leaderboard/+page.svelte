@@ -1,10 +1,34 @@
 <script>
 	import { scale, fly } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
+	import { getCurrentWeekStart } from '$lib/utils/dateUtils.js';
 	
 	export let data;
 	
-	const { leaderboard, userRank, weekStart } = data;
+	const { allRecentProgress, currentUserId } = data;
+	
+	// Calculate current week in BROWSER's timezone
+	const currentWeekStart = getCurrentWeekStart();
+	console.log('Leaderboard (Client) - Current week start:', currentWeekStart);
+	
+	// Filter to current week only
+	const thisWeekData = allRecentProgress.filter(entry => entry.week_start_date === currentWeekStart);
+	console.log('Leaderboard (Client) - This week entries:', thisWeekData.length);
+	
+	// Sort by bloks_earned and get top 10
+	const leaderboard = thisWeekData
+		.sort((a, b) => b.bloks_earned - a.bloks_earned)
+		.slice(0, 10);
+	
+	// Find user's rank if not in top 10
+	const allSorted = thisWeekData.sort((a, b) => b.bloks_earned - a.bloks_earned);
+	const userIndex = allSorted.findIndex(entry => entry.user_id === currentUserId);
+	const userRank = userIndex >= 10 ? {
+		rank: userIndex + 1,
+		...allSorted[userIndex]
+	} : null;
+	
+	const weekStart = currentWeekStart;
 	
 	// Format date
 	function formatDate(dateStr) {
@@ -84,16 +108,16 @@
 										</div>
 									</div>
 								</td>
-								<td class="px-6 py-4 text-center">
-									<span class="font-semibold text-neutral-900">{entry.problems_solved || 0}</span>
-								</td>
-								<td class="px-6 py-4 text-center">
-									<span class="inline-flex items-center gap-1 px-3 py-1 bg-amber-100 text-amber-700 rounded-full font-bold">
-										💎 {entry.bloks_earned || 0}
-									</span>
-								</td>
-								<td class="px-6 py-4 text-center">
-									{#if entry.user_profiles?.consecutive_qualified_weeks > 0}
+							<td class="px-6 py-4 text-center">
+								<span class="font-semibold text-neutral-900">{entry.problems_solved || 0}</span>
+							</td>
+							<td class="px-6 py-4 text-center">
+								<span class="inline-flex items-center gap-1 px-3 py-1 bg-amber-100 text-amber-700 rounded-full font-bold">
+									🧱 {entry.bloks_earned || 0}
+								</span>
+							</td>
+							<td class="px-6 py-4 text-center">
+								{#if entry.user_profiles?.consecutive_qualified_weeks > 0}
 										<span class="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full font-semibold text-sm">
 											🔥 {entry.user_profiles.consecutive_qualified_weeks}
 										</span>
@@ -135,7 +159,7 @@
 					</div>
 					<div class="text-center">
 						<div class="text-sm text-neutral-600">Bloks</div>
-						<div class="text-xl font-bold text-amber-600">💎 {userRank.bloks_earned || 0}</div>
+						<div class="text-xl font-bold text-amber-600">🧱 {userRank.bloks_earned || 0}</div>
 					</div>
 				</div>
 			</div>
