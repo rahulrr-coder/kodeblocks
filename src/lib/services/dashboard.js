@@ -6,20 +6,14 @@
 import { getAllProblems } from '$lib/api/problems.js';
 import { getUserProgress, getWeeklyProgress } from '$lib/api/progress.js';
 import { getUserProfile } from '$lib/api/users.js';
-import { mockProblems, mockUserProfile, mockWeeklyProgress } from '$lib/mockData.js';
 
 /**
  * Get all dashboard data for a user
- * @param {import('@supabase/supabase-js').SupabaseClient|null} supabase - Supabase client (null for mock mode)
+ * @param {import('@supabase/supabase-js').SupabaseClient} supabase - Supabase client
  * @param {string} userId - User UUID
- * @param {boolean} useMockData - Whether to use mock data instead of real database
  * @returns {Promise<Object>} Dashboard data with stats, tracks, and progress
  */
-export async function getDashboardData(supabase, userId, useMockData = false) {
-	if (useMockData || !supabase) {
-		return getMockDashboardData();
-	}
-
+export async function getDashboardData(supabase, userId) {
 	// Fetch all required data in parallel
 	const [profile, problems, progress, weeklyData] = await Promise.all([
 		getUserProfile(supabase, userId),
@@ -104,46 +98,4 @@ function calculateDifficultyCount(completedProblems) {
 	});
 
 	return counts;
-}
-
-/**
- * Get mock dashboard data for development/testing
- * @returns {Object} Mock dashboard data
- */
-function getMockDashboardData() {
-	const problems = mockProblems.map((p) => ({
-		...p,
-		completed: [1, 2, 3, 11, 12, 21, 22, 31].includes(p.id),
-	}));
-
-	const completedProblems = problems.filter(p => p.completed);
-	const totalSolved = completedProblems.length;
-	const weeklyData = mockWeeklyProgress;
-	const currentWeekPoints = weeklyData?.reduce((s, d) => s + (d.problems_solved || 0), 0) || 0;
-
-	const tracks = {
-		Foundations: { completed: 3, total: 5 },
-		'Interview Prep': { completed: 2, total: 6 },
-		'Deep Dive': { completed: 4, total: 8 },
-		'Problem Solving': { completed: 6, total: 12 },
-	};
-
-	const difficultyCount = calculateDifficultyCount(
-		completedProblems.map(p => ({ problems: p }))
-	);
-
-	return {
-		profile: mockUserProfile,
-		user: { email: 'demo@kodeblocks.com' },
-		totalSolved,
-		totalPoints: mockUserProfile.total_points,
-		currentWeekPoints,
-		streakWeeks: mockUserProfile.current_streak,
-		tracks,
-		difficultyCount,
-		completedProblems: completedProblems.map((p) => ({
-			problems: p,
-			completed_at: new Date().toISOString(),
-		})),
-	};
 }

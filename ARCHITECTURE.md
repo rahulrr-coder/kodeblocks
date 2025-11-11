@@ -210,8 +210,7 @@ kodeblocks/
 │   │   │
 │   │   ├── stores.js                 # Svelte stores (user, session)
 │   │   ├── supabase.js              # Supabase client configuration
-│   │   ├── utils.js                 # Utility functions
-│   │   └── mockData.js              # Mock data for development
+│   │   └── utils.js                 # Utility functions
 │   │
 │   ├── routes/                       # Routing Layer (THIN!)
 │   │   ├── dashboard/
@@ -356,7 +355,11 @@ import { createSupabaseServerClient } from '$lib/supabase.js';
 export const load = async (event) => {
   const { session } = await event.locals.safeGetSession?.() || {};
   const supabase = createSupabaseServerClient(event);
-  const userId = session?.user?.id || 'mock-user-id';
+  const userId = session?.user?.id;
+  
+  if (!userId) {
+    throw redirect(303, '/login');
+  }
   
   return await getDashboardData(supabase, userId);
 };

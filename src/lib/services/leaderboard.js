@@ -4,21 +4,15 @@
  */
 
 import { getTopUsers, getUserRank, getTotalUserCount } from '$lib/api/leaderboard.js';
-import { mockLeaderboard } from '$lib/mockData.js';
 
 /**
  * Get leaderboard data with rankings
- * @param {import('@supabase/supabase-js').SupabaseClient|null} supabase - Supabase client (null for mock mode)
+ * @param {import('@supabase/supabase-js').SupabaseClient} supabase - Supabase client
  * @param {string|null} userId - Current user UUID (optional)
- * @param {boolean} useMockData - Whether to use mock data
  * @param {number} limit - Maximum number of users to return
  * @returns {Promise<Object>} Leaderboard data with rankings and user position
  */
-export async function getLeaderboardData(supabase, userId = null, useMockData = false, limit = 100) {
-	if (useMockData || !supabase) {
-		return getMockLeaderboardData(userId);
-	}
-
+export async function getLeaderboardData(supabase, userId = null, limit = 100) {
 	// Fetch top users and user rank in parallel
 	const [topUsers, userRank, totalUsers] = await Promise.all([
 		getTopUsers(supabase, limit),
@@ -40,23 +34,6 @@ export async function getLeaderboardData(supabase, userId = null, useMockData = 
 		leaderboard,
 		currentUserRank: userRank,
 		totalUsers
-	};
-}
-
-/**
- * Get mock leaderboard data for development/testing
- * @param {string|null} userId - Current user UUID (optional)
- * @returns {Object} Mock leaderboard data
- */
-function getMockLeaderboardData(userId) {
-	return {
-		leaderboard: mockLeaderboard,
-		currentUserRank: userId ? {
-			rank: 4,
-			totalPoints: 450,
-			problemsSolved: 15
-		} : null,
-		totalUsers: mockLeaderboard.length
 	};
 }
 

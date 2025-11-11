@@ -80,17 +80,3 @@ export const DATE_FORMATS = {
 	/** Format for API (ISO 8601) */
 	API: 'yyyy-MM-dd\'T\'HH:mm:ss.SSSxxx'
 };
-
-/**
- * Environment configuration
- */
-export const ENV = {
-	/** Whether to use mock data instead of real database */
-	USE_MOCK_DATA: import.meta.env.VITE_USE_MOCK_DATA === 'true' || !import.meta.env.VITE_SUPABASE_URL,
-	
-	/** Supabase URL */
-	SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL || '',
-	
-	/** Supabase Anon Key */
-	SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-};

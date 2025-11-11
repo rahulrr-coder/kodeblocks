@@ -5,7 +5,6 @@
 
 import { getProblemsByTrack } from '$lib/api/problems.js';
 import { getUserProgress } from '$lib/api/progress.js';
-import { mockProblems } from '$lib/mockData.js';
 
 /**
  * Track name mapping from URL format to database format
@@ -19,21 +18,16 @@ const TRACK_URL_TO_DB = {
 
 /**
  * Get track data with problems and progress
- * @param {import('@supabase/supabase-js').SupabaseClient|null} supabase - Supabase client (null for mock mode)
+ * @param {import('@supabase/supabase-js').SupabaseClient} supabase - Supabase client
  * @param {string} trackUrlName - Track name from URL (e.g., "arrays-hashing")
  * @param {string} userId - User UUID
- * @param {boolean} useMockData - Whether to use mock data
  * @returns {Promise<Object>} Track data with problems and stats
  */
-export async function getTrackData(supabase, trackUrlName, userId, useMockData = false) {
+export async function getTrackData(supabase, trackUrlName, userId) {
 	const trackDbName = TRACK_URL_TO_DB[trackUrlName];
 	
 	if (!trackDbName) {
 		throw new Error(`Invalid track: ${trackUrlName}`);
-	}
-
-	if (useMockData || !supabase) {
-		return getMockTrackData(trackDbName);
 	}
 
 	// Fetch track problems and user progress
@@ -66,40 +60,6 @@ export async function getTrackData(supabase, trackUrlName, userId, useMockData =
 		problems: enrichedProblems,
 		stats: {
 			total: totalProblems,
-			completed: completedCount,
-			percentage
-		}
-	};
-}
-
-/**
- * Get mock track data for development/testing
- * @param {string} trackName - Track name in database format
- * @returns {Object} Mock track data
- */
-function getMockTrackData(trackName) {
-	const completedIds = [1, 2, 3, 11, 12, 21, 22, 31];
-	
-	const problems = mockProblems
-		.filter(p => p.track === trackName)
-		.map(p => ({
-			...p,
-			completed: completedIds.includes(p.id)
-		}));
-
-	const completedCount = problems.filter(p => p.completed).length;
-	const percentage = problems.length > 0
-		? Math.round((completedCount / problems.length) * 100)
-		: 0;
-
-	return {
-		trackName,
-		trackUrlName: Object.keys(TRACK_URL_TO_DB).find(
-			key => TRACK_URL_TO_DB[key] === trackName
-		) || '',
-		problems,
-		stats: {
-			total: problems.length,
 			completed: completedCount,
 			percentage
 		}

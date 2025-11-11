@@ -5,20 +5,14 @@
 
 import { getUserProfile } from '$lib/api/users.js';
 import { getCompletedProblems } from '$lib/api/progress.js';
-import { mockProblems, mockUserProfile } from '$lib/mockData.js';
 
 /**
  * Get complete profile data for a user
- * @param {import('@supabase/supabase-js').SupabaseClient|null} supabase - Supabase client (null for mock mode)
+ * @param {import('@supabase/supabase-js').SupabaseClient} supabase - Supabase client
  * @param {string} userId - User UUID
- * @param {boolean} useMockData - Whether to use mock data
  * @returns {Promise<Object>} Profile data with stats and achievements
  */
-export async function getProfileData(supabase, userId, useMockData = false) {
-	if (useMockData || !supabase) {
-		return getMockProfileData();
-	}
-
+export async function getProfileData(supabase, userId) {
 	// Fetch profile and completed problems
 	const [profile, completedRecords] = await Promise.all([
 		getUserProfile(supabase, userId),
@@ -122,37 +116,4 @@ export function calculateAchievements(stats) {
 	}
 
 	return achievements;
-}
-
-/**
- * Get mock profile data for development/testing
- * @returns {Object} Mock profile data
- */
-function getMockProfileData() {
-	const allProblems = mockProblems.map((p) => ({
-		...p,
-		completed: [1, 2, 3, 11, 12, 21, 22, 31].includes(p.id),
-	}));
-
-	const completed = allProblems.filter((p) => p.completed);
-
-	const difficultyCount = { Easy: 0, Medium: 0, Hard: 0 };
-	completed.forEach((p) => {
-		if (p.difficulty && difficultyCount.hasOwnProperty(p.difficulty)) {
-			difficultyCount[p.difficulty]++;
-		}
-	});
-
-	return {
-		profile: mockUserProfile,
-		user: { email: 'demo@kodeblocks.com' },
-		totalSolved: completed.length,
-		totalPoints: mockUserProfile.total_points,
-		streakWeeks: mockUserProfile.current_streak,
-		difficultyCount,
-		completedProblems: completed.map((p) => ({
-			problems: p,
-			completed_at: new Date().toISOString()
-		}))
-	};
 }
