@@ -5,11 +5,76 @@
 	import StatCard from '$lib/components/dashboard/StatCard.svelte';
 	import ProgressBar from '$lib/components/dashboard/ProgressBar.svelte';
 	import { getTrackInfo } from '$lib/config/tracks.js';
-	import { trackDbToUrl } from '$lib/utils.js';
 	
 	export let data;
 	
 	const { profile, weeklyProgress, tracks, user } = data;
+	
+	// Normalize track names for URL mapping
+	const normalizeTrackName = (name) => {
+		return name?.toLowerCase()
+			.replace(/[_\s]+/g, '-')
+			.replace(/[^a-z0-9-]/g, '');
+	};
+	
+	// Map database track names to our config keys and display info
+	const trackConfig = {
+		'buildingblocks': { 
+			display: 'Building Blocks', 
+			urlKey: 'building-blocks',
+			order: 1,
+			comingSoon: false
+		},
+		'building-blocks': { 
+			display: 'Building Blocks', 
+			urlKey: 'building-blocks',
+			order: 1,
+			comingSoon: false
+		},
+		'deepdive': { 
+			display: 'Deep Dive', 
+			urlKey: 'deep-dive',
+			order: 2,
+			comingSoon: false
+		},
+		'deep-dive': { 
+			display: 'Deep Dive', 
+			urlKey: 'deep-dive',
+			order: 2,
+			comingSoon: false
+		},
+		'interview-essentials': { 
+			display: 'Interview Prep', 
+			urlKey: 'interview-essentials',
+			order: 3,
+			comingSoon: true
+		}
+	};
+	
+	// Process and filter tracks - deduplicate by urlKey
+	const trackMap = new Map();
+	tracks?.forEach(track => {
+		const normalized = normalizeTrackName(track.name);
+		const config = trackConfig[normalized];
+		
+		if (!config) return;
+		
+		// Only add if we haven't seen this urlKey before, or if this one has more problems
+		const existing = trackMap.get(config.urlKey);
+		if (!existing || track.totalProblems > existing.totalProblems) {
+			trackMap.set(config.urlKey, {
+				...track,
+				displayName: config.display,
+				urlKey: config.urlKey,
+				order: config.order,
+				isComingSoon: config.comingSoon
+			});
+		}
+	});
+	
+	// Convert map to array and sort
+	const filteredTracks = Array.from(trackMap.values())
+		.sort((a, b) => a.order - b.order);
 	
 	// Dashboard data
 	const dashboardData = {
@@ -17,7 +82,7 @@
 		totalPoints: profile?.total_bloks_lifetime || 0,
 		currentWeekPoints: weeklyProgress?.bloks_earned || 0,
 		streakWeeks: profile?.consecutive_qualified_weeks || 0,
-		tracks: tracks || []
+		tracks: filteredTracks
 	};
 </script>
 
@@ -52,66 +117,9 @@
 		{/each}
 	</div>
 	
-	<!-- Section Header for Tracks -->
-	<div in:fade={{ duration: 400, delay: 400 }}>
-		<p class="text-lg text-neutral-600">Keep up the great work! Here's your progress overview.</p>
-	</div>
-	
 	<!-- Main Content Grid -->
-	<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-		<!-- Column 1: Your Tracks (2/3 width) -->
-		<div class="lg:col-span-2 space-y-6" in:fly={{ y: 30, duration: 500, delay: 500, easing: cubicOut }}>
-			<h2 class="text-3xl font-bold text-neutral-900">Your Tracks</h2>
-			
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-				{#each dashboardData.tracks as track, i}
-					{@const trackInfo = getTrackInfo(track.name)}
-					{@const isComingSoon = track.is_coming_soon}
-					<div 
-						class="card hover:shadow-lg transition-all duration-300 bg-white rounded-xl p-6 border border-neutral-200 relative hover:-translate-y-1"
-						in:scale={{ duration: 400, delay: 600 + i * 100, easing: cubicOut, start: 0.9 }}
-					>
-						{#if isComingSoon}
-							<div class="absolute top-4 right-4 bg-amber-100 text-amber-700 text-xs font-semibold px-3 py-1 rounded-full">
-								🚧 Coming Soon
-							</div>
-						{/if}
-						
-						<div class="flex items-start gap-3 mb-4">
-							<span class="text-4xl">{trackInfo?.icon || '📚'}</span>
-							<div class="flex-1">
-								<h3 class="text-xl font-bold text-neutral-900 mb-1">{track.name}</h3>
-								<p class="text-sm text-neutral-600">{track.description || trackInfo?.description || 'Track'}</p>
-							</div>
-						</div>
-						
-						{#if !isComingSoon}
-							<ProgressBar 
-								value={track.completedProblems}
-								max={track.totalProblems}
-								color={trackInfo?.color || 'blue'}
-								label="Progress"
-							/>
-							
-							<div class="mt-4">
-								<a 
-									href="/tracks/{trackDbToUrl(track.name)}"
-									class="text-sm font-semibold text-amber-600 hover:text-amber-700 transition-colors"
-								>
-									Continue Learning &rarr;
-								</a>
-							</div>
-						{:else}
-							<div class="mt-4 text-sm text-neutral-500 italic">
-								Track content coming soon...
-							</div>
-						{/if}
-					</div>
-				{/each}
-			</div>
-		</div>
-		
-		<!-- Column 2: Weekly Streak + Achievements (1/3 width) -->
+	<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+		<!-- Column 1: Weekly Goal (1/3 width) -->
 		<div class="lg:col-span-1 space-y-6">
 			<!-- Weekly Streak Card -->
 			<div 
@@ -134,23 +142,23 @@
 					
 					<div class="space-y-4">
 						<div>
-							<p class="text-sm font-medium text-neutral-600 mb-3">Weekly Target: 250 Bloks</p>
+							<p class="text-sm font-medium text-neutral-600 mb-3">Weekly Target: 150 Bloks</p>
 							<ProgressBar 
 								value={dashboardData.currentWeekPoints}
-								max={250}
+								max={150}
 								color="amber"
 							/>
 						</div>
 						
 						<div class="pt-4 border-t border-amber-200">
-							{#if dashboardData.currentWeekPoints >= 250}
+							{#if dashboardData.currentWeekPoints >= 150}
 								<div class="flex items-center gap-2 text-green-600 font-semibold">
 									<Award class="w-5 h-5" />
 									<span>Weekly goal complete! 🎉</span>
 								</div>
 							{:else}
 								<p class="text-sm text-neutral-600">
-									<span class="font-bold text-amber-600">{250 - dashboardData.currentWeekPoints}</span> more Bloks to qualify this week!
+									<span class="font-bold text-amber-600">{150 - dashboardData.currentWeekPoints}</span> more Bloks to qualify this week!
 								</p>
 							{/if}
 						</div>
@@ -170,6 +178,27 @@
 					<div class="w-16 h-16 bg-neutral-200 rounded-full flex items-center justify-center text-3xl opacity-50 transition-all hover:opacity-70 hover:scale-110" title="Locked">🔥</div>
 					<div class="w-16 h-16 bg-neutral-200 rounded-full flex items-center justify-center text-3xl opacity-50 transition-all hover:opacity-70 hover:scale-110" title="Locked">⭐</div>
 				</div>
+			</div>
+		</div>
+		
+		<!-- Column 2: Quick Actions (2/3 width) -->
+		<div class="lg:col-span-2 space-y-6" in:fly={{ y: 30, duration: 500, delay: 600, easing: cubicOut }}>
+			<!-- Browse Tracks CTA -->
+			<div class="bg-linear-to-br from-amber-400 to-amber-600 rounded-xl p-8 text-white shadow-lg">
+				<h2 class="text-3xl font-bold mb-4">Ready to Code? 🚀</h2>
+				<p class="text-lg mb-6 text-amber-50">Choose a track and start solving curated DSA problems</p>
+				<a 
+					href="/tracks"
+					class="inline-flex items-center gap-2 px-8 py-4 bg-white text-amber-600 font-bold rounded-lg hover:bg-amber-50 transition-all duration-200 shadow-md hover:shadow-xl hover:scale-105"
+				>
+					Browse Tracks →
+				</a>
+			</div>
+			
+			<!-- Recent Activity Placeholder -->
+			<div class="bg-white rounded-xl p-8 border-2 border-neutral-200">
+				<h3 class="text-2xl font-bold text-neutral-900 mb-4">Recent Activity</h3>
+				<p class="text-neutral-600">Your recent problem submissions will appear here.</p>
 			</div>
 		</div>
 	</div>
