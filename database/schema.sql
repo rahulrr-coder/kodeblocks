@@ -226,9 +226,9 @@ CREATE POLICY "Users can insert own track progress" ON public.track_progress
 CREATE POLICY "Users can update own track progress" ON public.track_progress
   FOR UPDATE USING (auth.uid() = user_id);
 
--- Weekly Progress: Users can only access their own
-CREATE POLICY "Users can view own weekly progress" ON public.weekly_progress
-  FOR SELECT USING (auth.uid() = user_id);
+-- Weekly Progress: Public read access for leaderboard, users can modify own
+CREATE POLICY "Anyone can view weekly progress" ON public.weekly_progress
+  FOR SELECT USING (true);
 
 CREATE POLICY "Users can insert own weekly progress" ON public.weekly_progress
   FOR INSERT WITH CHECK (auth.uid() = user_id);
