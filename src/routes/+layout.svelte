@@ -38,7 +38,7 @@
 </script>
 
 <svelte:head>
-	<title>KodeBlocks - DSA Learning Platform</title>
+	<title>KodeBloks - DSA Learning Platform</title>
 </svelte:head>
 
 <!-- Root layout: just global styles and slot, no navbar/footer -->
