@@ -19,7 +19,7 @@ KodeBloks is an open-source, gamified learning platform designed to help student
 We believe in understanding concepts from the ground up. Our learning tracks build intuition, not just pattern recognition.
 
 ### Community-Driven  
-Learning DSA is hard, and it's better together. Kodebloks features community events, leaderboards, and collaborative problem-solving.
+Learning DSA is hard, and it's better together. KodeBloks features community events, leaderboards, and collaborative problem-solving.
 
 ### Quality Over Quantity
 Curated, high-quality learning paths that genuinely prepare students for success—not thousands of random problems.
@@ -65,8 +65,13 @@ Built by students, for students. A FOSS project welcoming all contributors.
 
 ```bash
 # 1. Clone the repository
+<<<<<<< HEAD
 git clone https://github.com/rahulrr-coder/Kodebloks.git
 cd Kodebloks
+=======
+git clone https://github.com/rahulrr-coder/kodebloks.git
+cd kodebloks
+>>>>>>> a3a52e0 (fix: correct spelling of 'KodeBlocks' to 'KodeBloks' in documentation and package.json)
 
 # 2. Install dependencies
 bun install
@@ -91,7 +96,11 @@ Your app will be running at **http://localhost:5173/** 🎉
 
 ## 🏗️ Architecture
 
+<<<<<<< HEAD
 Kodebloks follows **clean architecture principles** with a layered design:
+=======
+KodeBloks follows **clean architecture principles** with a layered design:
+>>>>>>> a3a52e0 (fix: correct spelling of 'KodeBlocks' to 'KodeBloks' in documentation and package.json)
 
 - **Routes** - Thin routing layer (3-5 lines per file)
 - **Features** - Page composition and UI logic
@@ -152,8 +161,13 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 ## 📬 Contact & Support
 
+<<<<<<< HEAD
 - **Issues** - [GitHub Issues](https://github.com/rahulrr-coder/Kodebloks/issues)
 - **Discussions** - [GitHub Discussions](https://github.com/rahulrr-coder/Kodebloks/discussions)
+=======
+- **Issues** - [GitHub Issues](https://github.com/rahulrr-coder/kodebloks/issues)
+- **Discussions** - [GitHub Discussions](https://github.com/rahulrr-coder/kodebloks/discussions)
+>>>>>>> a3a52e0 (fix: correct spelling of 'KodeBlocks' to 'KodeBloks' in documentation and package.json)
 
 ---
 
@@ -162,5 +176,10 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 </p>
 
 <p align="center">
+<<<<<<< HEAD
   <a href="#-Kodebloks">Back to Top ↑</a>
 </p>
+=======
+  <a href="#-kodebloks">Back to Top ↑</a>
+</p>
+>>>>>>> a3a52e0 (fix: correct spelling of 'KodeBlocks' to 'KodeBloks' in documentation and package.json)

@@ -1,4 +1,4 @@
-# 🤝 Contributing to KodeBlocks
+# 🤝 Contributing to KodeBloks
 
 First off, **thank you** for considering contributing! We're excited to build this platform with you. This is a project by students, for students, and every contribution makes a difference.
 
@@ -30,22 +30,22 @@ We welcome all types of contributions, including:
 - 🎨 **Improving UI/UX**
 - 🧪 **Writing tests**
 
-If you're not sure where to start, check out the [Issues](https://github.com/rahulrr-coder/kodeblocks/issues) tab for `good first issue` or `help wanted` labels.
+If you're not sure where to start, check out the [Issues](https://github.com/rahulrr-coder/kodebloks/issues) tab for `good first issue` or `help wanted` labels.
 
 ---
 
 ## 📝 Contribution Workflow
 
 ### 1. Find or Create an Issue
-All work should be tied to an issue. If you have a new idea or bug fix, please [create an issue](https://github.com/rahulrr-coder/kodeblocks/issues/new) first to discuss it with the team.
+All work should be tied to an issue. If you have a new idea or bug fix, please [create an issue](https://github.com/rahulrr-coder/kodebloks/issues/new) first to discuss it with the team.
 
 ### 2. Fork the Repository
 Create a fork of this repo to your own GitHub account.
 
 ```bash
 # Click the "Fork" button on GitHub, then clone your fork
-git clone https://github.com/YOUR_USERNAME/kodeblocks.git
-cd kodeblocks
+git clone https://github.com/YOUR_USERNAME/kodebloks.git
+cd kodebloks
 ```
 
 ### 3. Create a Branch
@@ -82,7 +82,7 @@ git push origin feat/your-feature-name
 ```
 
 ### 7. Open a Pull Request
-Open a Pull Request (PR) from your branch to the `main` branch of the original kodeblocks repository.
+Open a Pull Request (PR) from your branch to the `main` branch of the original kodebloks repository.
 
 **In your PR description:**
 - Link the issue you are solving (e.g., "Closes #123")
@@ -473,21 +473,21 @@ We are committed to a welcoming and inclusive environment. Please follow the [Co
 
 ## 🎉 Recognition
 
-All contributors will be recognized in our README and release notes. Thank you for helping us build KodeBlocks!
+All contributors will be recognized in our README and release notes. Thank you for helping us build KodeBloks!
 
 ---
 
 ## 📬 Questions?
 
-- **Issues:** [GitHub Issues](https://github.com/rahulrr-coder/kodeblocks/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/rahulrr-coder/kodeblocks/discussions)
+- **Issues:** [GitHub Issues](https://github.com/rahulrr-coder/kodebloks/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/rahulrr-coder/kodebloks/discussions)
 
 ---
 
 <p align="center">
-  <strong>Thank you for contributing to KodeBlocks! 🚀</strong>
+  <strong>Thank you for contributing to KodeBloks! 🚀</strong>
 </p>
 
 <p align="center">
-  <a href="#-contributing-to-kodeblocks">Back to Top ↑</a>
+  <a href="#-contributing-to-kodebloks">Back to Top ↑</a>
 </p>

@@ -1,8 +1,8 @@
-# 🏗️ KodeBlocks Architecture
+# 🏗️ KodeBloks Architecture
 
 > **Comprehensive technical documentation for developers**
 
-This document provides an in-depth overview of KodeBlocks' architecture, design decisions, and implementation patterns.
+This document provides an in-depth overview of KodeBloks' architecture, design decisions, and implementation patterns.
 
 ---
 
@@ -25,7 +25,7 @@ This document provides an in-depth overview of KodeBlocks' architecture, design 
 
 ## Overview
 
-KodeBlocks follows a **clean, layered architecture** inspired by Domain-Driven Design (DDD) and Clean Architecture principles, adapted for SvelteKit's conventions.
+KodeBloks follows a **clean, layered architecture** inspired by Domain-Driven Design (DDD) and Clean Architecture principles, adapted for SvelteKit's conventions.
 
 ### Core Principles
 
@@ -153,7 +153,7 @@ Data flows **down** via props, events flow **up**.
 ### Complete Directory Tree
 
 ```
-kodeblocks/
+kodebloks/
 ├── src/
 │   ├── components/                    # UI Components (Feature-based)
 │   │   ├── common/                   # Shared components
@@ -1005,7 +1005,7 @@ onMount(() => {
 
 ## Styling with Tailwind CSS v4
 
-KodeBlocks uses **Tailwind CSS v4** with the modern `@theme` approach (no `tailwind.config.js`).
+KodeBloks uses **Tailwind CSS v4** with the modern `@theme` approach (no `tailwind.config.js`).
 
 ### Custom Theme Configuration
 
@@ -1505,5 +1505,5 @@ test('dashboard loads correctly', async ({ page }) => {
 </p>
 
 <p align="center">
-  <a href="#-kodeblocks-architecture">Back to Top ↑</a>
+  <a href="#-kodebloks-architecture">Back to Top ↑</a>
 </p>
