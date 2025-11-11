@@ -112,7 +112,7 @@
 	<div class="max-w-md w-full">
 		<!-- Header -->
 		<div class="text-center mb-8">
-			<h1 class="text-4xl font-bold text-neutral-900 mb-2">Welcome to KodeBlocks</h1>
+			<h1 class="text-4xl font-bold text-neutral-900 mb-2">Welcome to KodeBloks</h1>
 			<p class="text-lg text-neutral-600">Start your DSA learning journey</p>
 		</div>
 

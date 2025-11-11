@@ -1,4 +1,6 @@
 <script>
+import { fade } from 'svelte/transition';
+import { cubicOut } from 'svelte/easing';
 import { createEventDispatcher } from 'svelte';
 import DifficultyBadge from '$lib/components/common/DifficultyBadge.svelte';
 
@@ -40,7 +42,11 @@ return map[platform] || platform;
 }
 </script>
 
-<div class="problem-card" class:completed={problem.isCompleted}>
+<div 
+	class="problem-card" 
+	class:completed={problem.isCompleted}
+	in:fade={{ duration: 300, delay: Math.min(index * 15, 400), easing: cubicOut }}
+>
 <div class="problem-main">
 <div class="problem-header">
 <span class="problem-number">#{index + 1}</span>

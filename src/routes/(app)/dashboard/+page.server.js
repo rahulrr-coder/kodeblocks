@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from '$lib/supabase.js';
+import { getTracksWithProgress } from '$lib/api/problems.js';
 
 export const load = async (event) => {
 	const supabase = createSupabaseServerClient(event);
@@ -18,9 +19,14 @@ export const load = async (event) => {
 		problems_solved: 0,
 		qualified: false
 	};
+
+	// Get tracks with real problem counts and user progress
+	const tracksWithProgress = await getTracksWithProgress(supabase, user.id);
 	
 	return {
 		profile,
-		weeklyProgress: currentWeekProgress
+		weeklyProgress: currentWeekProgress,
+		tracks: tracksWithProgress,
+		user
 	};
 };

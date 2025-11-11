@@ -21,7 +21,7 @@
 </script>
 
 <svelte:head>
-	<title>KodeBlocks - Master DSA One Block at a Time</title>
+	<title>KodeBloks - Master DSA One Block at a Time</title>
 	<meta name="description" content="Structured learning tracks, daily coding challenges, and progress tracking to master Data Structures & Algorithms." />
 </svelte:head>
 
@@ -33,7 +33,7 @@
 				<div class="w-8 h-8 bg-linear-to-br from-amber-500 to-teal-600 rounded-lg flex items-center justify-center">
 					<span class="text-white font-bold text-sm">KB</span>
 				</div>
-				<span class="text-xl font-bold text-neutral-900">KodeBlocks</span>
+				<span class="text-xl font-bold text-neutral-900">KodeBloks</span>
 			</a>
 			
 			<div class="flex items-center gap-4">
@@ -258,7 +258,7 @@
 						<div class="w-8 h-8 bg-linear-to-br from-amber-500 to-teal-600 rounded-lg flex items-center justify-center">
 							<span class="text-white font-bold text-sm">KB</span>
 						</div>
-						<span class="text-lg font-bold text-white">KodeBlocks</span>
+						<span class="text-lg font-bold text-white">KodeBloks</span>
 					</div>
 					<p class="text-sm text-neutral-400">
 						Master DSA through structured learning and consistent practice.
@@ -294,7 +294,7 @@
 			</div>
 			
 			<div class="border-t border-neutral-800 pt-8 text-center text-sm text-neutral-400">
-				<p>© 2025 KodeBlocks. Built with ❤️ by <a href="https://github.com/rahulrr-coder" target="_blank" rel="noopener" class="text-amber-500 hover:text-amber-400">@RS</a> Rahul RR.</p>
+				<p>© 2025 KodeBloks. Built with ❤️ by <a href="https://github.com/rahulrr-coder" target="_blank" rel="noopener" class="text-amber-500 hover:text-amber-400">@RS</a> Rahul RR.</p>
 			</div>
 		</div>
 	</footer>

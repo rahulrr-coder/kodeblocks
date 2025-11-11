@@ -28,7 +28,7 @@ export const TRACK_INFO = {
 	},
 	'Deep Dive': {
 		color: 'purple',
-		icon: '�',
+		icon: '🏊',
 		description: 'Advanced algorithms and complex topics'
 	},
 	'Problem Solving': {

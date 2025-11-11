@@ -96,3 +96,54 @@ export async function getProblemById(supabase, problemId) {
 	if (error) throw error;
 	return data;
 }
+
+
+/**
+ * Get track statistics with user progress
+ * @param {import('@supabase/supabase-js').SupabaseClient} supabase - Supabase client instance
+ * @param {string} userId - User UUID
+ * @returns {Promise<Array<Object>>} Array of track objects with stats
+ */
+export async function getTracksWithProgress(supabase, userId) {
+	// Get all tracks
+	const tracks = await getAllTracks(supabase);
+
+	// Get problem counts per track using aggregation
+	const { data: problemCounts, error: problemCountsError } = await supabase
+		.from('problems')
+		.select('track_id, count:id')
+		.group('track_id');
+
+	if (problemCountsError) throw problemCountsError;
+	if (!problemCounts) throw new Error('Failed to fetch problem counts');
+
+	const countsByTrackId = {};
+	problemCounts.forEach((row) => {
+		countsByTrackId[row.track_id] = row.count;
+	});
+	const { data: submissions, error: submissionsError } = await supabase
+		.from('user_submissions')
+		.select('problem_id, problems(track_id)')
+		.eq('user_id', userId);
+
+	if (submissionsError) throw submissionsError;
+
+	// Count completed by track_id
+	const completedByTrackId = {};
+	submissions?.forEach((sub) => {
+		const trackId = sub.problems?.track_id;
+		if (trackId) {
+			completedByTrackId[trackId] = (completedByTrackId[trackId] || 0) + 1;
+		}
+	});
+
+	// Combine data
+	return tracks.map((track) => ({
+		...track,
+		totalProblems: countsByTrackId[track.id] || 0,
+		completedProblems: completedByTrackId[track.id] || 0,
+		progress: countsByTrackId[track.id]
+			? Math.round(((completedByTrackId[track.id] || 0) / countsByTrackId[track.id]) * 100)
+			: 0
+	}));
+}
