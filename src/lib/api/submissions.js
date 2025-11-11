@@ -3,6 +3,8 @@
  * Aligned with new database schema (user_submissions, user_profiles, etc.)
  */
 
+import { getCurrentWeekStart } from '$lib/utils/dateUtils.js';
+
 // Named constant for weekly qualification threshold
 const WEEKLY_QUALIFICATION_THRESHOLD = 150;
 
@@ -208,13 +210,7 @@ export async function markProblemComplete(supabase, userId, problemId, bloksEarn
 	}
 
 	// 4. Update weekly_progress
-	const now = new Date();
-	const dayOfWeek = now.getDay();
-	const diff = now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-	const weekStart = new Date(now.getTime());
-	weekStart.setDate(diff);
-	weekStart.setHours(0, 0, 0, 0);
-	const weekStartStr = weekStart.toISOString().split('T')[0];
+	const weekStartStr = getCurrentWeekStart();
 
 	// Check if weekly_progress record exists
 	const { data: weeklyProgress } = await supabase

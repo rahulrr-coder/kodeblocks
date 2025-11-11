@@ -6,13 +6,13 @@ import DifficultyBadge from '$lib/components/common/DifficultyBadge.svelte';
 
 export let problem;
 export let index;
-export let canComplete = true;
-export let cooldownTime = '';
+export let isSubmitting = false;
 
 const dispatch = createEventDispatcher();
 
 function handleMarkComplete() {
-dispatch('complete', problem.id);
+	if (isSubmitting) return;
+	dispatch('complete', problem.id);
 }
 
 function formatTimestamp(timestamp) {
@@ -106,11 +106,18 @@ Solve
 <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/>
 </svg>
 </a>
-<button class="btn btn-complete" disabled={!canComplete} on:click={handleMarkComplete} title={canComplete ? 'Mark as complete' : `Cooldown active: ${cooldownTime}`}>
-{#if canComplete}
-Mark Complete
+<button 
+	class="btn btn-complete" 
+	class:loading={isSubmitting}
+	disabled={isSubmitting} 
+	on:click={handleMarkComplete}
+	title="Mark as complete"
+>
+{#if isSubmitting}
+	<span class="spinner"></span>
+	Submitting...
 {:else}
-⏱️ {cooldownTime}
+	Mark Complete
 {/if}
 </button>
 </div>
@@ -271,6 +278,7 @@ box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 .btn-complete {
 background: #14b8a6;
 color: white;
+position: relative;
 }
 .btn-complete:hover:not(:disabled) {
 background: #0d9488;
@@ -281,6 +289,25 @@ box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 background: #d1d5db;
 color: #9ca3af;
 cursor: not-allowed;
+}
+.btn-complete.loading {
+background: #0d9488;
+cursor: wait;
+}
+.spinner {
+display: inline-block;
+width: 1rem;
+height: 1rem;
+border: 2px solid rgba(255, 255, 255, 0.3);
+border-top-color: white;
+border-radius: 50%;
+animation: spin 0.6s linear infinite;
+margin-right: 0.5rem;
+}
+@keyframes spin {
+to {
+	transform: rotate(360deg);
+}
 }
 .external-icon {
 width: 1rem;
