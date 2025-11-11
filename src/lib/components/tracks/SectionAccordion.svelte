@@ -4,20 +4,22 @@
 	 * Collapsible section with progress bar and problem list
 	 */
 	import { slide } from 'svelte/transition';
+	import { createEventDispatcher } from 'svelte';
 	import { calculateSectionStats } from '$lib/utils/filterUtils.js';
 	import ProblemCard from './ProblemCard.svelte';
 
 	export let sectionName;
 	export let problems = [];
 	export let isExpanded = false;
-	export let canComplete = true;
-	export let cooldownTime = '';
-	export let onComplete = () => {};
+	export let submittingProblemId = null;
+
+	const dispatch = createEventDispatcher();
 
 	$: stats = calculateSectionStats(problems);
 
 	function toggleSection() {
 		isExpanded = !isExpanded;
+		dispatch('toggle', sectionName);
 	}
 </script>
 
@@ -62,9 +64,8 @@
 					<ProblemCard
 						{problem}
 						{index}
-						{canComplete}
-						{cooldownTime}
-						on:complete={onComplete}
+						isSubmitting={submittingProblemId === problem.id}
+						on:complete
 					/>
 				{/each}
 			</div>

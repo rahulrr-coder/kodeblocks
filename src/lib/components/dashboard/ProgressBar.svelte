@@ -11,6 +11,7 @@
 		blue: 'bg-blue-600',
 		green: 'bg-green-600',
 		yellow: 'bg-yellow-600',
+		amber: 'bg-amber-600',
 		purple: 'bg-purple-600',
 		red: 'bg-red-600'
 	};

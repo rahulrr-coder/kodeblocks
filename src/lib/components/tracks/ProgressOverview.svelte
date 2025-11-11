@@ -22,7 +22,7 @@
 	<div class="stats-grid">
 		<!-- Total Bloks -->
 		<div class="stat-card bloks-card">
-			<div class="stat-icon">💎</div>
+			<div class="stat-icon">🧱</div>
 			<div class="stat-content">
 				<span class="stat-label">Total Bloks</span>
 				<span class="stat-value bloks-value">{totalBloksEarned}</span>
@@ -31,7 +31,7 @@
 
 		<!-- Problems Completed -->
 		<div class="stat-card">
-			<div class="stat-icon">✅</div>
+			<div class="stat-icon">🏆</div>
 			<div class="stat-content">
 				<span class="stat-label">Completed</span>
 				<span class="stat-value">{stats.completed}/{stats.total}</span>
@@ -59,7 +59,7 @@
 				</svg>
 			</div>
 			<div class="stat-content">
-				<span class="stat-label">Progress</span>
+				<span class="stat-label">🚀 Progress</span>
 				<span class="stat-sublabel">Keep going!</span>
 			</div>
 		</div>

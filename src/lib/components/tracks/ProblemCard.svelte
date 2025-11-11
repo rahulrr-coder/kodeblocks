@@ -65,7 +65,7 @@ Completed
 <DifficultyBadge difficulty={problem.difficulty} />
 <span class="meta-separator">•</span>
 <span class="bloks-badge">
-<span class="bloks-icon">💎</span>
+<span class="bloks-icon">🧱</span>
 <strong>{problem.bloks}</strong> Bloks
 </span>
 <span class="meta-separator">•</span>
