@@ -139,10 +139,8 @@
 </script>
 
 <svelte:head>
-	<title>{track.name} - KodeBlocks</title>
+	<title>{track.name} - KodeBloks</title>
 </svelte:head>
-
-<Header {user} currentRoute="/tracks" />
 
 <div class="track-page">
 	<!-- Back Button -->
