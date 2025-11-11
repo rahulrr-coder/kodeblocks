@@ -48,7 +48,8 @@ export const load = async (event) => {
 			problems: problemsWithProgress,
 			stats: { total, completed, percentage },
 			totalBloksEarned,
-			lastCompletedAt
+			lastCompletedAt,
+			user
 		};
 	} catch (error) {
 		console.error('Error loading track data:', error);

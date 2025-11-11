@@ -12,7 +12,7 @@
 
 	export let data;
 
-	let { track, problems, stats, totalBloksEarned, lastCompletedAt } = data;
+	let { track, problems, stats, totalBloksEarned, lastCompletedAt, user } = data;
 
 	// Filter state
 	let filters = {
@@ -133,9 +133,16 @@
 		stats = data.stats;
 		totalBloksEarned = data.totalBloksEarned;
 		lastCompletedAt = data.lastCompletedAt;
+		user = data.user;
 		updateCooldownStatus();
 	}
 </script>
+
+<svelte:head>
+	<title>{track.name} - KodeBlocks</title>
+</svelte:head>
+
+<Header {user} currentRoute="/tracks" />
 
 <div class="track-page">
 	<!-- Back Button -->
