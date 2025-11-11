@@ -108,19 +108,22 @@ export async function getTracksWithProgress(supabase, userId) {
 	// Get all tracks
 	const tracks = await getAllTracks(supabase);
 
-	// Get problem counts per track using aggregation
-	const { data: problemCounts, error: problemCountsError } = await supabase
+	// Get all problems and count them per track in application code
+	const { data: allProblems, error: problemsError } = await supabase
 		.from('problems')
-		.select('track_id, count:id')
-		.group('track_id');
+		.select('track_id');
 
-	if (problemCountsError) throw problemCountsError;
-	if (!problemCounts) throw new Error('Failed to fetch problem counts');
+	if (problemsError) throw problemsError;
 
+	// Count problems by track_id
 	const countsByTrackId = {};
-	problemCounts.forEach((row) => {
-		countsByTrackId[row.track_id] = row.count;
+	allProblems?.forEach((problem) => {
+		if (problem.track_id) {
+			countsByTrackId[problem.track_id] = (countsByTrackId[problem.track_id] || 0) + 1;
+		}
 	});
+
+	// Get user submissions
 	const { data: submissions, error: submissionsError } = await supabase
 		.from('user_submissions')
 		.select('problem_id, problems(track_id)')

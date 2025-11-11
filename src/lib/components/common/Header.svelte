@@ -14,7 +14,23 @@
 	function isActive(path) {
 		return $page.url.pathname === path || $page.url.pathname.startsWith(path + '/');
 	}
+	
+	// Dropdown state
+	let dropdownOpen = false;
+	
+	function toggleDropdown() {
+		dropdownOpen = !dropdownOpen;
+	}
+	
+	// Close dropdown when clicking outside
+	function handleClickOutside(event) {
+		if (dropdownOpen && !event.target.closest('.user-menu')) {
+			dropdownOpen = false;
+		}
+	}
 </script>
+
+<svelte:window on:click={handleClickOutside} />
 
 <header class="navbar">
 	<div class="navbar-container">
@@ -49,29 +65,52 @@
 				Dashboard
 			</a>
 			<a 
+				href="/tracks" 
+				class="nav-link" 
+				class:active={isActive('/tracks')}
+			>
+				Tracks
+			</a>
+			<a 
 				href="/leaderboard" 
 				class="nav-link" 
 				class:active={isActive('/leaderboard')}
 			>
 				Leaderboard
 			</a>
-			<a 
-				href="/profile" 
-				class="nav-link" 
-				class:active={isActive('/profile')}
-			>
-				Profile
-			</a>
 		</nav>
 
 		<!-- User Menu -->
 		<div class="user-menu">
-			<button class="user-button">
+			<button class="user-button" on:click={toggleDropdown}>
 				<span class="user-avatar">
 					{username.charAt(0).toUpperCase()}
 				</span>
 				<span class="user-name">@{username}</span>
+				<svg class="dropdown-arrow" class:rotate={dropdownOpen} width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+					<path d="M4.427 6.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 6H4.604a.25.25 0 00-.177.427z"/>
+				</svg>
 			</button>
+			
+			{#if dropdownOpen}
+				<div class="dropdown-menu">
+					<a href="/profile" class="dropdown-item">
+						<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+							<path d="M8 8a3 3 0 100-6 3 3 0 000 6zm2-3a2 2 0 11-4 0 2 2 0 014 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+						</svg>
+						Profile
+					</a>
+					<form action="/auth/signout" method="POST" class="dropdown-form">
+						<button type="submit" class="dropdown-item logout">
+							<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+								<path fill-rule="evenodd" d="M10 12.5a.5.5 0 01-.5.5h-8a.5.5 0 01-.5-.5v-9a.5.5 0 01.5-.5h8a.5.5 0 01.5.5v2a.5.5 0 001 0v-2A1.5 1.5 0 009.5 2h-8A1.5 1.5 0 000 3.5v9A1.5 1.5 0 001.5 14h8a1.5 1.5 0 001.5-1.5v-2a.5.5 0 00-1 0v2z"/>
+								<path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 000-.708l-3-3a.5.5 0 00-.708.708L14.293 7.5H5.5a.5.5 0 000 1h8.793l-2.147 2.146a.5.5 0 00.708.708l3-3z"/>
+							</svg>
+							Logout
+						</button>
+					</form>
+				</div>
+			{/if}
 		</div>
 	</div>
 </header>
@@ -175,6 +214,7 @@
 	.user-menu {
 		display: flex;
 		align-items: center;
+		position: relative;
 	}
 
 	.user-button {
@@ -198,6 +238,14 @@
 		transform: translateY(-1px);
 		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
 	}
+	
+	.dropdown-arrow {
+		transition: transform 0.2s;
+	}
+	
+	.dropdown-arrow.rotate {
+		transform: rotate(180deg);
+	}
 
 	.user-avatar {
 		width: 2rem;
@@ -214,6 +262,57 @@
 
 	.user-name {
 		font-family: 'JetBrains Mono', monospace;
+	}
+	
+	/* Dropdown Menu */
+	.dropdown-menu {
+		position: absolute;
+		top: calc(100% + 0.5rem);
+		right: 0;
+		background: white;
+		border: 2px solid #e5e7eb;
+		border-radius: 0.75rem;
+		box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+		min-width: 12rem;
+		overflow: hidden;
+		z-index: 50;
+	}
+	
+	.dropdown-item {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.75rem 1rem;
+		color: #374151;
+		text-decoration: none;
+		font-size: 0.875rem;
+		font-weight: 500;
+		transition: all 0.15s;
+		cursor: pointer;
+		border: none;
+		background: transparent;
+		width: 100%;
+		text-align: left;
+	}
+	
+	.dropdown-item:hover {
+		background: #f9fafb;
+		color: #d97706;
+	}
+	
+	.dropdown-item.logout {
+		color: #dc2626;
+		border-top: 1px solid #e5e7eb;
+	}
+	
+	.dropdown-item.logout:hover {
+		background: #fef2f2;
+		color: #dc2626;
+	}
+	
+	.dropdown-form {
+		margin: 0;
+		padding: 0;
 	}
 
 	/* Responsive */

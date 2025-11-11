@@ -68,26 +68,19 @@ export async function markProblemComplete(supabase, userId, problemId, bloksEarn
 
 /**
  * Update user's last completion timestamp
+ * NO-OP: We track submissions in user_submissions table, not a separate timestamp
  * @param {import('@supabase/supabase-js').SupabaseClient} supabase - Supabase client instance
  * @param {string} userId - User UUID
- * @returns {Promise<Object>} Updated user profile
+ * @returns {Promise<Object>} Empty object for compatibility
  */
 export async function updateLastCompletedAt(supabase, userId) {
-	const { data, error } = await supabase
-		.from('user_profiles')
-		.update({
-			last_completed_at: new Date().toISOString()
-		})
-		.eq('user_id', userId)
-		.select()
-		.single();
-
-	if (error) throw error;
-	return data;
+	// This function is kept for API compatibility but does nothing
+	// The submission timestamp is already recorded in user_submissions.submitted_at
+	return {};
 }
 
 /**
- * Get user's last completion timestamp
+ * Get user's last completion timestamp from most recent submission
  * @param {import('@supabase/supabase-js').SupabaseClient} supabase - Supabase client instance
  * @param {string} userId - User UUID
  * @returns {Promise<Date|null>} Last completion timestamp
@@ -95,19 +88,24 @@ export async function updateLastCompletedAt(supabase, userId) {
 export async function getLastCompletedAt(supabase, userId) {
 	try {
 		const { data, error } = await supabase
-			.from('user_profiles')
-			.select('last_completed_at')
+			.from('user_submissions')
+			.select('submitted_at')
 			.eq('user_id', userId)
+			.order('submitted_at', { ascending: false })
+			.limit(1)
 			.single();
 
 		if (error) {
-			// If column doesn't exist, return null (cooldown disabled)
-			console.warn('Could not fetch last_completed_at:', error.message);
+			// No submissions yet
+			if (error.code === 'PGRST116') {
+				return null;
+			}
+			console.warn('Could not fetch last submission:', error.message);
 			return null;
 		}
-		return data?.last_completed_at || null;
+		return data?.submitted_at || null;
 	} catch (err) {
-		console.warn('Error fetching last_completed_at:', err);
+		console.warn('Error fetching last submission:', err);
 		return null;
 	}
 }
