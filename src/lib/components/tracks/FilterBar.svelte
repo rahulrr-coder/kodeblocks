@@ -21,7 +21,7 @@
 
 <div class="filter-bar">
 	<div class="filter-section">
-		<label class="filter-label">Difficulty</label>
+		<span class="filter-label">Difficulty</span>
 		<div class="filter-buttons">
 			<button
 				class="filter-btn"
@@ -55,7 +55,7 @@
 	</div>
 
 	<div class="filter-section">
-		<label class="filter-label">Status</label>
+		<span class="filter-label">Status</span>
 		<div class="filter-buttons">
 			<button
 				class="filter-btn"
@@ -82,8 +82,9 @@
 	</div>
 
 	<div class="filter-section">
-		<label class="filter-label">Sort By</label>
+		<label class="filter-label" for="sort-select">Sort By</label>
 		<select
+			id="sort-select"
 			class="sort-select"
 			bind:value={filters.sortBy}
 			on:change={() => dispatch('change', filters)}

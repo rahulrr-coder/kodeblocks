@@ -7,8 +7,8 @@
  * Track metadata and visual properties
  * @typedef {Object} TrackInfo
  * @property {string} color - Tailwind color name (e.g., 'blue', 'green')
- * @property {string} icon - Emoji icon for the track
  * @property {string} description - Short description of the track
+ * @property {boolean} comingSoon - Whether the track is coming soon
  */
 
 /**
@@ -16,25 +16,20 @@
  * @type {Object.<string, TrackInfo>}
  */
 export const TRACK_INFO = {
-	'Building Blocks': {
+	'building-blocks': {
 		color: 'blue',
-		icon: '🧱',
-		description: 'Master DSA fundamentals and basics'
+		description: 'Master DSA fundamentals and essential building blocks',
+		comingSoon: false
 	},
-	'Interview Prep': {
-		color: 'green',
-		icon: '💼',
-		description: 'Common interview questions and patterns'
-	},
-	'Deep Dive': {
+	'deep-dive': {
 		color: 'purple',
-		icon: '🏊',
-		description: 'Advanced algorithms and complex topics'
+		description: 'Advanced algorithms and complex problem-solving patterns',
+		comingSoon: false
 	},
-	'Problem Solving': {
-		color: 'yellow',
-		icon: '🧩',
-		description: 'Practice patterns and problem-solving techniques'
+	'interview-essentials': {
+		color: 'green',
+		description: 'Essential patterns and questions for technical interviews',
+		comingSoon: true
 	}
 };
 
