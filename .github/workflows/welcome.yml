@@ -6,6 +6,9 @@ on:
   issues:
     types: [opened]
 
+permissions:
+  issues: write  # Grant write access to issues
+
 jobs:
   welcome:
     runs-on: ubuntu-latest
