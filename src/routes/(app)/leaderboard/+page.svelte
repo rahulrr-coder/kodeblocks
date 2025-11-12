@@ -10,10 +10,24 @@
 	// Calculate current week in BROWSER's timezone
 	const currentWeekStart = getCurrentWeekStart();
 	console.log('Leaderboard (Client) - Current week start:', currentWeekStart);
+	console.log('Leaderboard (Client) - All progress data:', allRecentProgress);
 	
-	// Filter to current week only
-	const thisWeekData = allRecentProgress.filter(entry => entry.week_start_date === currentWeekStart);
+	// Get all unique week dates from the data
+	const uniqueWeeks = [...new Set(allRecentProgress.map(entry => entry.week_start_date))];
+	console.log('Leaderboard (Client) - Unique weeks:', uniqueWeeks);
+	
+	// Filter to current week - but be flexible with date matching
+	// Check if calculated week exists, otherwise use the most recent week
+	let targetWeek = currentWeekStart;
+	if (!uniqueWeeks.includes(currentWeekStart) && uniqueWeeks.length > 0) {
+		// Sort weeks and use the most recent one
+		targetWeek = uniqueWeeks.sort((a, b) => new Date(b) - new Date(a))[0];
+		console.log('Leaderboard (Client) - Using most recent week instead:', targetWeek);
+	}
+	
+	const thisWeekData = allRecentProgress.filter(entry => entry.week_start_date === targetWeek);
 	console.log('Leaderboard (Client) - This week entries:', thisWeekData.length);
+	console.log('Leaderboard (Client) - Filtered data:', thisWeekData);
 	
 	// Sort by bloks_earned and get top 10
 	const leaderboard = thisWeekData
@@ -28,7 +42,7 @@
 		...allSorted[userIndex]
 	} : null;
 	
-	const weekStart = currentWeekStart;
+	const weekStart = targetWeek;
 	
 	// Format date
 	function formatDate(dateStr) {

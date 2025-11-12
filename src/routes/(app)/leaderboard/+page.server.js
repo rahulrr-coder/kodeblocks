@@ -8,8 +8,8 @@ export const load = async (event) => {
 	const supabase = createSupabaseServerClient(event);
 	const { user } = await event.parent();
 	
-	// Fetch recent weeks data (last 2 weeks to handle timezone differences)
-	// Client will determine which week is "current" based on browser timezone
+	// Fetch all recent weeks data (last 2 weeks) to handle timezone differences
+	// We'll let the client determine which week to display
 	const { data: allRecentProgress, error: allError } = await supabase
 		.from('weekly_progress')
 		.select(`
@@ -26,15 +26,23 @@ export const load = async (event) => {
 		`)
 		.gte('week_start_date', new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
 		.gt('bloks_earned', 0)
+		.order('week_start_date', { ascending: false })
 		.order('bloks_earned', { ascending: false });
 	
 	if (allError) {
 		console.error('Error fetching leaderboard:', allError);
 	}
 	
+	// Get the most recent week_start_date from the data
+	const mostRecentWeek = allRecentProgress?.[0]?.week_start_date;
+	
+	console.log('Server - Most recent week in DB:', mostRecentWeek);
+	console.log('Server - Total entries:', allRecentProgress?.length);
+	
 	return {
 		allRecentProgress: allRecentProgress || [],
-		currentUserId: user?.id
+		currentUserId: user?.id,
+		mostRecentWeek
 	};
 };
 
