@@ -8,6 +8,7 @@ on:
 
 permissions:
   issues: write  # Grant write access to issues
+  pull-requests: write  # Grant write access to pull requests
 
 jobs:
   welcome:
