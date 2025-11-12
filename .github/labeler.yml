@@ -1,0 +1,58 @@
+# Label PRs based on changed files
+
+# Documentation
+documentation:
+  - '**/*.md'
+  - 'docs/**/*'
+
+# Components
+component:
+  - 'src/lib/components/**/*'
+
+# API & Services
+api:
+  - 'src/lib/api/**/*'
+  - 'src/lib/services/**/*'
+
+# Database
+database:
+  - 'database/**/*'
+  - '**/*.sql'
+
+# Configuration
+config:
+  - '**/*config*.js'
+  - '**/*config*.json'
+  - '.github/**/*'
+  - 'package.json'
+  - 'package-lock.json'
+  - 'bun.lockb'
+
+# Styles
+styles:
+  - '**/*.css'
+  - 'src/lib/styles/**/*'
+
+# Routes/Pages
+routes:
+  - 'src/routes/**/*'
+
+# Features
+feature:
+  - 'src/lib/features/**/*'
+
+# Utils
+utils:
+  - 'src/lib/utils/**/*'
+
+# Tests
+tests:
+  - '**/*.test.js'
+  - '**/*.spec.js'
+  - 'tests/**/*'
+
+# Dependencies
+dependencies:
+  - 'package.json'
+  - 'package-lock.json'
+  - 'bun.lockb'
