@@ -1,8 +1,8 @@
-# 🧩 KodeBlocks
+# 🧩 KodeBloks
 
 > **Master Data Structures & Algorithms through first-principles thinking**
 
-KodeBlocks is an open-source, gamified learning platform designed to help students master DSA through structured learning paths, consistent practice, and community collaboration.
+KodeBloks is an open-source, gamified learning platform designed to help students master DSA through structured learning paths, consistent practice, and community collaboration.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![SvelteKit](https://img.shields.io/badge/SvelteKit-FF3E00?style=flat&logo=svelte&logoColor=white)](https://kit.svelte.dev/)
