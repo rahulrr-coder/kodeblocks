@@ -8,19 +8,26 @@ import { ACHIEVEMENTS } from '$lib/config/badges.js';
 import { error } from '@sveltejs/kit';
 
 export const load = async (event) => {
-	const { username } = event.params;
-	const supabase = createSupabaseServerClient(event);
+	try {
+		const { username } = event.params;
 
-	// Fetch user profile by username
-	const { data: profile, error: profileError } = await supabase
-		.from('user_profiles')
-		.select('*')
-		.eq('username', username)
-		.single();
+		if (!username) {
+			throw error(400, 'Username is required');
+		}
 
-	if (profileError || !profile) {
-		throw error(404, 'User not found');
-	}
+		const supabase = createSupabaseServerClient(event);
+
+		// Fetch user profile by username
+		const { data: profile, error: profileError } = await supabase
+			.from('user_profiles')
+			.select('*')
+			.eq('username', username)
+			.single();
+
+		if (profileError || !profile) {
+			console.error('Profile not found for username:', username, profileError);
+			throw error(404, 'User not found');
+		}
 
 	// Get user's earned badges (with error handling)
 	let earnedBadges = [];
@@ -54,54 +61,77 @@ export const load = async (event) => {
 		});
 	}
 
-	// Get detailed track progress
-	const { data: trackProgress, error: trackError } = await supabase
-		.from('track_progress')
-		.select(`
-			*,
-			tracks:track_id (
-				display_name,
-				icon,
-				description
-			)
-		`)
-		.eq('user_id', profile.user_id)
-		.order('last_solved_at', { ascending: false });
+		// Get detailed track progress
+		let trackProgress = [];
+		try {
+			const { data, error: trackError } = await supabase
+				.from('track_progress')
+				.select(`
+					*,
+					tracks:track_id (
+						display_name,
+						icon,
+						description
+					)
+				`)
+				.eq('user_id', profile.user_id)
+				.order('last_solved_at', { ascending: false });
 
-	if (trackError) {
-		console.error('Error fetching track progress:', trackError);
+			if (trackError) {
+				console.error('Error fetching track progress:', trackError);
+			} else {
+				trackProgress = data || [];
+			}
+		} catch (err) {
+			console.error('Exception fetching track progress:', err);
+		}
+
+		// Get recent weekly progress for streak visualization
+		let weeklyHistory = [];
+		try {
+			const { data, error: weekError } = await supabase
+				.from('weekly_progress')
+				.select('week_start_date, bloks_earned, problems_solved, qualified')
+				.eq('user_id', profile.user_id)
+				.order('week_start_date', { ascending: false })
+				.limit(12);
+
+			if (weekError) {
+				console.error('Error fetching weekly history:', weekError);
+			} else {
+				weeklyHistory = data || [];
+			}
+		} catch (err) {
+			console.error('Exception fetching weekly history:', err);
+		}
+
+		// Return public-safe data only (no email, no sensitive info)
+		return {
+			profile: {
+				username: profile.username,
+				display_name: profile.display_name,
+				bio: profile.bio,
+				avatar_id: profile.avatar_id,
+				total_problems_solved: profile.total_problems_solved || 0,
+				total_bloks_lifetime: profile.total_bloks_lifetime || 0,
+				consecutive_qualified_weeks: profile.consecutive_qualified_weeks || 0,
+				highest_consecutive_weeks: profile.highest_consecutive_weeks || 0,
+				total_qualified_weeks: profile.total_qualified_weeks || 0,
+				created_at: profile.created_at
+			},
+			achievements: achievementsWithStatus,
+			earnedBadges,
+			trackProgress,
+			weeklyHistory,
+			isPublicView: true
+		};
+	} catch (err) {
+		// If it's already a SvelteKit error (404, 400), re-throw it
+		if (err.status) {
+			throw err;
+		}
+		// Otherwise, log and throw 500
+		console.error('Critical error in public profile load:', err);
+		throw error(500, 'Failed to load profile');
 	}
-
-	// Get recent weekly progress for streak visualization
-	const { data: weeklyHistory, error: weekError } = await supabase
-		.from('weekly_progress')
-		.select('week_start_date, bloks_earned, problems_solved, qualified')
-		.eq('user_id', profile.user_id)
-		.order('week_start_date', { ascending: false })
-		.limit(12);
-
-	if (weekError) {
-		console.error('Error fetching weekly history:', weekError);
-	}
-
-	// Return public-safe data only (no email, no sensitive info)
-	return {
-		profile: {
-			username: profile.username,
-			display_name: profile.display_name,
-			bio: profile.bio,
-			avatar_id: profile.avatar_id,
-			total_problems_solved: profile.total_problems_solved,
-			total_bloks_lifetime: profile.total_bloks_lifetime,
-			consecutive_qualified_weeks: profile.consecutive_qualified_weeks,
-			highest_consecutive_weeks: profile.highest_consecutive_weeks,
-			total_qualified_weeks: profile.total_qualified_weeks,
-			created_at: profile.created_at
-		},
-		achievements: achievementsWithStatus,
-		earnedBadges: earnedBadges,
-		trackProgress: trackProgress || [],
-		weeklyHistory: weeklyHistory || [],
-		isPublicView: true
-	};
 };
