@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { invalidateAll } from '$app/navigation';
+	import { invalidate } from '$app/navigation';
 	import ProgressOverview from '$lib/components/tracks/ProgressOverview.svelte';
 	import FilterBar from '$lib/components/tracks/FilterBar.svelte';
 	import SectionAccordion from '$lib/components/tracks/SectionAccordion.svelte';
@@ -113,8 +113,12 @@
 			// Show success message with animation
 			showSuccessMessage(problem);
 
-			// Refresh data from server to update dashboard and leaderboard
-			await invalidateAll();
+			// Refresh only specific routes that depend on user stats (faster than invalidateAll)
+			await Promise.all([
+				invalidate('/dashboard'),
+				invalidate('/leaderboard'),
+				invalidate(url => url.pathname.includes('/tracks/'))
+			]);
 
 		} catch (error) {
 			console.error('Error marking problem complete:', error);

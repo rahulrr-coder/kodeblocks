@@ -28,6 +28,7 @@
 	},
 	"dependencies": {
 		"@supabase/ssr": "^0.7.0",
-		"@supabase/supabase-js": "^2.76.1"
+		"@supabase/supabase-js": "^2.76.1",
+		"canvas-confetti": "^1.9.4"
 	}
 }

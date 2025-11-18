@@ -21,73 +21,69 @@ export const load = async (event) => {
 			};
 		}
 
-		// Fetch recent week's progress (last 3 weeks to handle timezone differences)
+		// Parallelize all independent database queries for faster loading
 		let recentWeeks = [];
-		try {
-			const { data, error } = await supabase
-				.from('weekly_progress')
-				.select('*')
-				.eq('user_id', user.id)
-				.order('week_start_date', { ascending: false })
-				.limit(3);
-
-			if (error) {
-				console.error('Error fetching weekly progress:', error);
-			} else {
-				recentWeeks = data || [];
-			}
-		} catch (err) {
-			console.error('Exception fetching weekly progress:', err);
-		}
-
-		// Fetch recent submissions (last 10)
 		let recentSubmissions = [];
-		try {
-			const { data, error } = await supabase
-				.from('user_submissions')
-				.select(`
-					id,
-					bloks_earned,
-					submitted_at,
-					problems:problem_id (
-						id,
-						title,
-						difficulty,
-						slug,
-						track_id,
-						tracks:track_id (
-							display_name,
-							icon
-						)
-					)
-				`)
-				.eq('user_id', user.id)
-				.order('submitted_at', { ascending: false })
-				.limit(10);
-
-			if (error) {
-				console.error('Error fetching recent submissions:', error);
-			} else {
-				recentSubmissions = data || [];
-			}
-		} catch (err) {
-			console.error('Exception fetching recent submissions:', err);
-		}
-
-		// Get tracks with real problem counts and user progress
 		let tracksWithProgress = [];
-		try {
-			tracksWithProgress = await getTracksWithProgress(supabase, user.id);
-		} catch (err) {
-			console.error('Error fetching tracks:', err);
-		}
-
-		// Get user's earned badges (with error handling)
 		let earnedBadges = [];
 		let achievementsWithStatus = [];
 
 		try {
-			earnedBadges = await getUserBadges(user.id, event);
+			// Fetch all data in parallel
+			const [weeksResult, submissionsResult, tracksResult, badgesResult] = await Promise.all([
+				// Query 1: Recent weeks progress
+				supabase
+					.from('weekly_progress')
+					.select('*')
+					.eq('user_id', user.id)
+					.order('week_start_date', { ascending: false })
+					.limit(3),
+
+				// Query 2: Recent submissions
+				supabase
+					.from('user_submissions')
+					.select(`
+						id,
+						bloks_earned,
+						submitted_at,
+						problems:problem_id (
+							id,
+							title,
+							difficulty,
+							slug,
+							track_id,
+							tracks:track_id (
+								display_name,
+								icon
+							)
+						)
+					`)
+					.eq('user_id', user.id)
+					.order('submitted_at', { ascending: false })
+					.limit(10),
+
+				// Query 3: Tracks with progress
+				getTracksWithProgress(supabase, user.id),
+
+				// Query 4: User badges
+				getUserBadges(user.id, event)
+			]);
+
+			// Process results
+			if (weeksResult.error) {
+				console.error('Error fetching weekly progress:', weeksResult.error);
+			} else {
+				recentWeeks = weeksResult.data || [];
+			}
+
+			if (submissionsResult.error) {
+				console.error('Error fetching recent submissions:', submissionsResult.error);
+			} else {
+				recentSubmissions = submissionsResult.data || [];
+			}
+
+			tracksWithProgress = tracksResult || [];
+			earnedBadges = badgesResult || [];
 
 			// Create a set of earned badge names for quick lookup
 			const earnedBadgeNames = new Set(earnedBadges.map(b => b?.badges?.name).filter(Boolean));

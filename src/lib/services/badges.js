@@ -16,32 +16,45 @@ export async function checkAndAwardBadges(userId, supabaseOrEvent) {
 	const supabase = supabaseOrEvent.from ? supabaseOrEvent : createSupabaseServerClient(supabaseOrEvent);
 
 	try {
-		// Get user's current stats from user_profiles
-		const { data: profile, error: profileError } = await supabase
-			.from('user_profiles')
-			.select('total_problems_solved, consecutive_qualified_weeks, total_bloks_lifetime')
-			.eq('user_id', userId)
-			.single();
+		// Parallelize initial data fetching for faster badge checking
+		const [profileResult, trackResult, userBadgesResult] = await Promise.all([
+			// Query 1: User profile stats
+			supabase
+				.from('user_profiles')
+				.select('total_problems_solved, consecutive_qualified_weeks, total_bloks_lifetime')
+				.eq('user_id', userId)
+				.single(),
 
-		if (profileError) {
-			console.error('Error fetching user profile for badge check:', profileError);
+			// Query 2: Track progress for difficulty counts
+			supabase
+				.from('track_progress')
+				.select('difficulty, problems_solved')
+				.eq('user_id', userId),
+
+			// Query 3: Already earned badges
+			supabase
+				.from('user_badges')
+				.select('badge_id')
+				.eq('user_id', userId)
+		]);
+
+		// Check for profile fetch error
+		if (profileResult.error) {
+			console.error('Error fetching user profile for badge check:', profileResult.error);
 			return [];
 		}
 
-		// Get user's problem difficulty counts from track_progress
-		const { data: trackProgress, error: trackError } = await supabase
-			.from('track_progress')
-			.select('difficulty, problems_solved')
-			.eq('user_id', userId);
+		const profile = profileResult.data;
 
-		if (trackError) {
-			console.error('Error fetching track progress:', trackError);
+		// Process track progress
+		if (trackResult.error) {
+			console.error('Error fetching track progress:', trackResult.error);
 		}
 
 		// Calculate difficulty counts
 		const difficultyCount = {};
-		if (trackProgress) {
-			trackProgress.forEach(track => {
+		if (trackResult.data) {
+			trackResult.data.forEach(track => {
 				difficultyCount[track.difficulty] = (difficultyCount[track.difficulty] || 0) + track.problems_solved;
 			});
 		}
@@ -54,18 +67,13 @@ export async function checkAndAwardBadges(userId, supabaseOrEvent) {
 			difficultyCount: difficultyCount
 		};
 
-		// Get achievements user already has
-		const { data: userBadges, error: badgesError } = await supabase
-			.from('user_badges')
-			.select('badge_id')
-			.eq('user_id', userId);
-
-		if (badgesError) {
-			console.error('Error fetching user badges:', badgesError);
+		// Process user badges
+		if (userBadgesResult.error) {
+			console.error('Error fetching user badges:', userBadgesResult.error);
 			return [];
 		}
 
-		const earnedBadgeIds = new Set((userBadges || []).map(b => b.badge_id));
+		const earnedBadgeIds = new Set((userBadgesResult.data || []).map(b => b.badge_id));
 
 		// Check which achievements are unlocked based on current stats
 		const unlockedAchievements = ACHIEVEMENTS.filter(achievement => achievement.condition(stats));
@@ -89,19 +97,28 @@ export async function checkAndAwardBadges(userId, supabaseOrEvent) {
 			}
 		}
 
-		// Award new badges
-		const awardedBadges = [];
-		for (const badge of newBadges) {
-			const { error: insertError } = await supabase
+		// Award new badges in parallel for faster processing
+		if (newBadges.length === 0) {
+			return [];
+		}
+
+		const awardPromises = newBadges.map(badge =>
+			supabase
 				.from('user_badges')
 				.insert({
 					user_id: userId,
 					badge_id: badge.id,
 					earned_at: new Date().toISOString()
-				});
+				})
+				.then(({ error }) => ({ badge, error }))
+		);
 
-			if (insertError) {
-				console.error(`Error awarding badge ${badge.name}:`, insertError);
+		const results = await Promise.all(awardPromises);
+
+		const awardedBadges = [];
+		for (const { badge, error } of results) {
+			if (error) {
+				console.error(`Error awarding badge ${badge.name}:`, error);
 			} else {
 				console.log(`✨ Badge awarded: ${badge.display_name} to user ${userId}`);
 				awardedBadges.push(badge);

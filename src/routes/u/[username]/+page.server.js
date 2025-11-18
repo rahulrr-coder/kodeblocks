@@ -29,12 +29,43 @@ export const load = async (event) => {
 			throw error(404, 'User not found');
 		}
 
-	// Get user's earned badges (with error handling)
+	// Parallelize all independent database queries for faster loading
 	let earnedBadges = [];
 	let achievementsWithStatus = [];
+	let trackProgress = [];
+	let weeklyHistory = [];
 
 	try {
-		earnedBadges = await getUserBadges(profile.user_id, event);
+		// Fetch all data in parallel
+		const [badgesResult, trackResult, weeklyResult] = await Promise.all([
+			// Query 1: User badges
+			getUserBadges(profile.user_id, event),
+
+			// Query 2: Track progress
+			supabase
+				.from('track_progress')
+				.select(`
+					*,
+					tracks:track_id (
+						display_name,
+						icon,
+						description
+					)
+				`)
+				.eq('user_id', profile.user_id)
+				.order('last_solved_at', { ascending: false }),
+
+			// Query 3: Weekly history
+			supabase
+				.from('weekly_progress')
+				.select('week_start_date, bloks_earned, problems_solved, qualified')
+				.eq('user_id', profile.user_id)
+				.order('week_start_date', { ascending: false })
+				.limit(12)
+		]);
+
+		// Process badges result
+		earnedBadges = badgesResult || [];
 
 		// Create a set of earned badge names for quick lookup
 		const earnedBadgeNames = new Set(earnedBadges.map(b => b.badges?.name).filter(Boolean));
@@ -48,9 +79,23 @@ export const load = async (event) => {
 				earnedAt: earnedBadges.find(b => b.badges?.name === achievement.id)?.earned_at
 			};
 		});
+
+		// Process track progress result
+		if (trackResult.error) {
+			console.error('Error fetching track progress:', trackResult.error);
+		} else {
+			trackProgress = trackResult.data || [];
+		}
+
+		// Process weekly history result
+		if (weeklyResult.error) {
+			console.error('Error fetching weekly history:', weeklyResult.error);
+		} else {
+			weeklyHistory = weeklyResult.data || [];
+		}
 	} catch (err) {
-		console.error('Error loading badges for public profile:', err);
-		// Fallback: show all achievements as locked (remove condition function)
+		console.error('Error loading public profile data:', err);
+		// Fallback: show all achievements as locked
 		achievementsWithStatus = ACHIEVEMENTS.map(achievement => {
 			const { condition, ...achievementData } = achievement;
 			return {
@@ -60,50 +105,6 @@ export const load = async (event) => {
 			};
 		});
 	}
-
-		// Get detailed track progress
-		let trackProgress = [];
-		try {
-			const { data, error: trackError } = await supabase
-				.from('track_progress')
-				.select(`
-					*,
-					tracks:track_id (
-						display_name,
-						icon,
-						description
-					)
-				`)
-				.eq('user_id', profile.user_id)
-				.order('last_solved_at', { ascending: false });
-
-			if (trackError) {
-				console.error('Error fetching track progress:', trackError);
-			} else {
-				trackProgress = data || [];
-			}
-		} catch (err) {
-			console.error('Exception fetching track progress:', err);
-		}
-
-		// Get recent weekly progress for streak visualization
-		let weeklyHistory = [];
-		try {
-			const { data, error: weekError } = await supabase
-				.from('weekly_progress')
-				.select('week_start_date, bloks_earned, problems_solved, qualified')
-				.eq('user_id', profile.user_id)
-				.order('week_start_date', { ascending: false })
-				.limit(12);
-
-			if (weekError) {
-				console.error('Error fetching weekly history:', weekError);
-			} else {
-				weeklyHistory = data || [];
-			}
-		} catch (err) {
-			console.error('Exception fetching weekly history:', err);
-		}
 
 		// Return public-safe data only (no email, no sensitive info)
 		return {

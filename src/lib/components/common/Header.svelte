@@ -61,6 +61,7 @@
 				href="/dashboard" 
 				class="nav-link" 
 				class:active={isActive('/dashboard')}
+				data-sveltekit-preload-data="hover"
 			>
 				Dashboard
 			</a>
@@ -68,6 +69,7 @@
 				href="/tracks" 
 				class="nav-link" 
 				class:active={isActive('/tracks')}
+				data-sveltekit-preload-data="hover"
 			>
 				Tracks
 			</a>
@@ -75,6 +77,7 @@
 				href="/leaderboard" 
 				class="nav-link" 
 				class:active={isActive('/leaderboard')}
+				data-sveltekit-preload-data="hover"
 			>
 				Leaderboard
 			</a>
