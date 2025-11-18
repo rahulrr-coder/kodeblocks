@@ -46,6 +46,9 @@
 	let showBadgeModal = false;
 	let newlyEarnedBadges = [];
 
+	// Track locally completed problems (for optimistic UI updates)
+	let locallyCompletedIds = new Set();
+
 	// Reactive grouping and filtering
 	$: filteredProblems = applyFiltersAndSort(problems, filters);
 	$: groupedProblems = groupBySection(filteredProblems);
@@ -123,6 +126,9 @@
 			lastCompletedAt = new Date().toISOString();
 			updateCooldownStatus();
 
+			// Track this problem as locally completed (for optimistic UI)
+			locallyCompletedIds.add(problemId);
+
 			// Update local problems array to mark this problem as completed
 			problems = problems.map(p =>
 				p.id === problemId
@@ -188,10 +194,17 @@
 		newlyEarnedBadges = [];
 	}
 
-	// React to data changes
+	// React to data changes - merge with local state
 	$: {
 		track = data.track;
-		problems = data.problems;
+
+		// Merge server data with locally completed problems for instant UI
+		problems = data.problems.map(p =>
+			locallyCompletedIds.has(p.id)
+				? { ...p, completed: true, completed_at: p.completed_at || new Date().toISOString() }
+				: p
+		);
+
 		stats = data.stats;
 		totalBloksEarned = data.totalBloksEarned;
 		lastCompletedAt = data.lastCompletedAt;
