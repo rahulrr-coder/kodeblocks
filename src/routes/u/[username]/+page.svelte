@@ -110,8 +110,8 @@
 				<span class="text-neutral-600">{earnedCount} {earnedCount === 1 ? 'Achievement' : 'Achievements'} Earned</span>
 			</div>
 
+			{#if earnedAchievements.length > 0}
 			<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-				{#if earnedAchievements.length > 0}
 				{#each earnedAchievements as achievement}
 					<div
 						class="relative {achievement.bgColor} rounded-xl p-4 transition-all hover:scale-105 opacity-100 shadow-md"
