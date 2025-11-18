@@ -10,24 +10,16 @@
 	// Calculate current week in BROWSER's timezone
 	const currentWeekStart = getCurrentWeekStart();
 	console.log('Leaderboard (Client) - Current week start:', currentWeekStart);
-	console.log('Leaderboard (Client) - All progress data:', allRecentProgress);
-	
-	// Get all unique week dates from the data
-	const uniqueWeeks = [...new Set(allRecentProgress.map(entry => entry.week_start_date))];
-	console.log('Leaderboard (Client) - Unique weeks:', uniqueWeeks);
-	
-	// Filter to current week - but be flexible with date matching
-	// Check if calculated week exists, otherwise use the most recent week
-	let targetWeek = currentWeekStart;
-	if (!uniqueWeeks.includes(currentWeekStart) && uniqueWeeks.length > 0) {
-		// Sort weeks and use the most recent one
-		targetWeek = uniqueWeeks.sort((a, b) => new Date(b) - new Date(a))[0];
-		console.log('Leaderboard (Client) - Using most recent week instead:', targetWeek);
-	}
-	
+
+	// ALWAYS use current week - don't fall back to old data
+	const targetWeek = currentWeekStart;
+
+	// Filter to current week only
 	const thisWeekData = allRecentProgress.filter(entry => entry.week_start_date === targetWeek);
 	console.log('Leaderboard (Client) - This week entries:', thisWeekData.length);
-	console.log('Leaderboard (Client) - Filtered data:', thisWeekData);
+
+	// Check if we have data for this week
+	const hasDataThisWeek = thisWeekData.length > 0;
 	
 	// Sort by bloks_earned and get top 10
 	const leaderboard = thisWeekData
@@ -145,8 +137,22 @@
 				</table>
 			</div>
 		{:else}
-			<div class="p-12 text-center">
-				<p class="text-lg text-neutral-500">No rankings yet this week. Be the first to qualify!</p>
+			<div class="p-16 text-center space-y-4">
+				<div class="text-6xl mb-4">🏆</div>
+				<h3 class="text-2xl font-bold text-neutral-900">Fresh Start!</h3>
+				<p class="text-lg text-neutral-600 max-w-md mx-auto">
+					The leaderboard resets every Monday. No one has qualified this week yet.
+				</p>
+				<div class="pt-4">
+					<div class="inline-block px-6 py-3 bg-amber-100 rounded-xl">
+						<p class="text-amber-900 font-semibold">
+							💪 Be the first to solve 150 bloks this week!
+						</p>
+					</div>
+				</div>
+				<p class="text-sm text-neutral-500 pt-2">
+					Week of {formatDate(targetWeek)} • Get started now!
+				</p>
 			</div>
 		{/if}
 	</div>
