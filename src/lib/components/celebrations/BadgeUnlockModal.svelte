@@ -20,21 +20,21 @@
 </script>
 
 {#if show && currentBadge}
-	<!-- Backdrop -->
+	<!-- Glassmorphism Backdrop -->
 	<div
-		class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4"
+		class="fixed inset-0 backdrop-blur-sm bg-black/20 z-50 flex items-center justify-center p-4"
 		on:click|stopPropagation
 		on:keydown={(e) => e.key === 'Escape' && handleClose()}
-		transition:fade={{ duration: 200 }}
+		transition:fade={{ duration: 300 }}
 		role="button"
 		tabindex="0"
 	>
-		<!-- Modal -->
+		<!-- Modal with glassmorphism -->
 		<div
-			class="bg-gradient-to-br from-white to-amber-50 rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border-4 border-amber-400"
+			class="glass-badge-modal rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border-2 border-amber-300/50"
 			on:click|stopPropagation
 			on:keydown|stopPropagation
-			transition:scale={{ duration: 400, easing: cubicOut, start: 0.7 }}
+			transition:scale={{ duration: 400, easing: cubicOut, start: 0.9 }}
 			role="dialog"
 			aria-modal="true"
 		>
@@ -84,6 +84,12 @@
 {/if}
 
 <style>
+	.glass-badge-modal {
+		background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(254, 243, 199, 0.95));
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+	}
+
 	@keyframes badge-unlock {
 		0% {
 			transform: scale(0) rotate(-180deg);

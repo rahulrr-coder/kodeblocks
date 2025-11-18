@@ -1,7 +1,6 @@
 <script>
 	import { scale, fade } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
-	import { onMount } from 'svelte';
 
 	export let bloks = 0;
 	export let problemTitle = '';
@@ -10,57 +9,71 @@
 
 	// Animated counter
 	let displayedBloks = 0;
+	let animationFrame = null;
 
-	onMount(() => {
-		if (show && bloks > 0) {
-			// Animate counter from 0 to bloks
-			const duration = 1000;
-			const startTime = Date.now();
-			const startValue = 0;
-			const endValue = bloks;
+	// Reactive statement - runs when show or bloks changes
+	$: if (show && bloks > 0) {
+		// Reset and start animation
+		displayedBloks = 0;
+		startAnimation();
+	}
 
-			const animate = () => {
-				const now = Date.now();
-				const elapsed = now - startTime;
-				const progress = Math.min(elapsed / duration, 1);
+	function startAnimation() {
+		const duration = 1000;
+		const startTime = Date.now();
+		const endValue = bloks;
 
-				// Ease out cubic
-				const easedProgress = 1 - Math.pow(1 - progress, 3);
-				displayedBloks = Math.floor(startValue + (endValue - startValue) * easedProgress);
+		const animate = () => {
+			const now = Date.now();
+			const elapsed = now - startTime;
+			const progress = Math.min(elapsed / duration, 1);
 
-				if (progress < 1) {
-					requestAnimationFrame(animate);
-				} else {
-					displayedBloks = endValue;
-				}
-			};
+			// Ease out cubic
+			const easedProgress = 1 - Math.pow(1 - progress, 3);
+			displayedBloks = Math.floor(endValue * easedProgress);
 
-			animate();
+			if (progress < 1) {
+				animationFrame = requestAnimationFrame(animate);
+			} else {
+				displayedBloks = endValue;
+			}
+		};
+
+		// Cancel any existing animation
+		if (animationFrame) {
+			cancelAnimationFrame(animationFrame);
 		}
-	});
+
+		animate();
+	}
 
 	function handleClose() {
+		// Cancel animation when closing
+		if (animationFrame) {
+			cancelAnimationFrame(animationFrame);
+		}
 		show = false;
+		displayedBloks = 0;
 		onClose();
 	}
 </script>
 
 {#if show}
-	<!-- Backdrop -->
+	<!-- Glassmorphism Backdrop -->
 	<div
-		class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+		class="fixed inset-0 backdrop-blur-sm bg-black/20 z-50 flex items-center justify-center p-4"
 		on:click={handleClose}
 		on:keydown={(e) => e.key === 'Escape' && handleClose()}
-		transition:fade={{ duration: 200 }}
+		transition:fade={{ duration: 300 }}
 		role="button"
 		tabindex="0"
 	>
-		<!-- Modal -->
+		<!-- Modal with glassmorphism -->
 		<div
-			class="bg-white rounded-2xl p-8 max-w-md w-full text-center shadow-2xl"
+			class="glass-modal rounded-2xl p-8 max-w-md w-full text-center shadow-2xl border border-white/20"
 			on:click|stopPropagation
 			on:keydown|stopPropagation
-			transition:scale={{ duration: 300, easing: cubicOut, start: 0.8 }}
+			transition:scale={{ duration: 400, easing: cubicOut, start: 0.9 }}
 			role="dialog"
 			aria-modal="true"
 		>
@@ -101,6 +114,12 @@
 {/if}
 
 <style>
+	.glass-modal {
+		background: rgba(255, 255, 255, 0.95);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+	}
+
 	@keyframes bounce-in {
 		0% {
 			transform: scale(0);

@@ -119,9 +119,20 @@
 			// Update last completion timestamp
 			await updateLastCompletedAt(supabase, user.id);
 
-			// Update local state
+			// Update local state IMMEDIATELY for instant UI feedback
 			lastCompletedAt = new Date().toISOString();
 			updateCooldownStatus();
+
+			// Update local problems array to mark this problem as completed
+			problems = problems.map(p =>
+				p.id === problemId
+					? { ...p, completed: true, completed_at: new Date().toISOString() }
+					: p
+			);
+
+			// Update stats locally for instant feedback
+			stats.problemsCompleted = (stats.problemsCompleted || 0) + 1;
+			totalBloksEarned = (totalBloksEarned || 0) + problem.bloks;
 
 			// Play celebration sounds
 			playSuccessSound();
