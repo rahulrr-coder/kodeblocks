@@ -22,18 +22,31 @@ export const load = async (event) => {
 		throw error(404, 'User not found');
 	}
 
-	// Get user's earned badges
-	const earnedBadges = await getUserBadges(profile.user_id, event);
+	// Get user's earned badges (with error handling)
+	let earnedBadges = [];
+	let achievementsWithStatus = [];
 
-	// Create a set of earned badge names for quick lookup
-	const earnedBadgeNames = new Set(earnedBadges.map(b => b.badges?.name).filter(Boolean));
+	try {
+		earnedBadges = await getUserBadges(profile.user_id, event);
 
-	// Combine achievements with earned status
-	const achievementsWithStatus = ACHIEVEMENTS.map(achievement => ({
-		...achievement,
-		earned: earnedBadgeNames.has(achievement.id),
-		earnedAt: earnedBadges.find(b => b.badges?.name === achievement.id)?.earned_at
-	}));
+		// Create a set of earned badge names for quick lookup
+		const earnedBadgeNames = new Set(earnedBadges.map(b => b.badges?.name).filter(Boolean));
+
+		// Combine achievements with earned status
+		achievementsWithStatus = ACHIEVEMENTS.map(achievement => ({
+			...achievement,
+			earned: earnedBadgeNames.has(achievement.id),
+			earnedAt: earnedBadges.find(b => b.badges?.name === achievement.id)?.earned_at
+		}));
+	} catch (err) {
+		console.error('Error loading badges for public profile:', err);
+		// Fallback: show all achievements as locked
+		achievementsWithStatus = ACHIEVEMENTS.map(achievement => ({
+			...achievement,
+			earned: false,
+			earnedAt: null
+		}));
+	}
 
 	// Get detailed track progress
 	const { data: trackProgress, error: trackError } = await supabase
