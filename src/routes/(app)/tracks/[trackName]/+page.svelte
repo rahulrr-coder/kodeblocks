@@ -132,7 +132,12 @@
 			// Update local problems array to mark this problem as completed
 			problems = problems.map(p =>
 				p.id === problemId
-					? { ...p, completed: true, completed_at: new Date().toISOString() }
+					? {
+						...p,
+						isCompleted: true,
+						completedAt: new Date().toISOString(),
+						bloksEarnedFromThis: problem.bloks
+					}
 					: p
 			);
 
@@ -199,11 +204,18 @@
 		track = data.track;
 
 		// Merge server data with locally completed problems for instant UI
-		problems = data.problems.map(p =>
-			locallyCompletedIds.has(p.id)
-				? { ...p, completed: true, completed_at: p.completed_at || new Date().toISOString() }
-				: p
-		);
+		problems = data.problems.map(p => {
+			if (locallyCompletedIds.has(p.id) && !p.isCompleted) {
+				// This was completed locally but server hasn't updated yet
+				return {
+					...p,
+					isCompleted: true,
+					completedAt: p.completedAt || new Date().toISOString(),
+					bloksEarnedFromThis: p.bloksEarnedFromThis || p.bloks
+				};
+			}
+			return p;
+		});
 
 		stats = data.stats;
 		totalBloksEarned = data.totalBloksEarned;
