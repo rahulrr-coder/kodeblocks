@@ -1,9 +1,9 @@
 /**
  * @fileoverview Cooldown utility functions
- * Manages 10-minute cooldown between problem completions
+ * Manages 5-minute cooldown between problem completions
  */
 
-const COOLDOWN_MINUTES = 10;
+const COOLDOWN_MINUTES = 5;
 
 /**
  * Check if user can complete a problem (cooldown expired)
