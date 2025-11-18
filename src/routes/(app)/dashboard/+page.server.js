@@ -59,20 +59,26 @@ export const load = async (event) => {
 		// Create a set of earned badge names for quick lookup
 		const earnedBadgeNames = new Set(earnedBadges.map(b => b.badges?.name).filter(Boolean));
 
-		// Combine achievements with earned status
-		achievementsWithStatus = ACHIEVEMENTS.map(achievement => ({
-			...achievement,
-			earned: earnedBadgeNames.has(achievement.id),
-			earnedAt: earnedBadges.find(b => b.badges?.name === achievement.id)?.earned_at
-		}));
+		// Combine achievements with earned status (remove condition function for serialization)
+		achievementsWithStatus = ACHIEVEMENTS.map(achievement => {
+			const { condition, ...achievementData } = achievement;
+			return {
+				...achievementData,
+				earned: earnedBadgeNames.has(achievement.id),
+				earnedAt: earnedBadges.find(b => b.badges?.name === achievement.id)?.earned_at
+			};
+		});
 	} catch (error) {
 		console.error('Error loading badges:', error);
-		// Fallback: show all achievements as locked
-		achievementsWithStatus = ACHIEVEMENTS.map(achievement => ({
-			...achievement,
-			earned: false,
-			earnedAt: null
-		}));
+		// Fallback: show all achievements as locked (remove condition function)
+		achievementsWithStatus = ACHIEVEMENTS.map(achievement => {
+			const { condition, ...achievementData } = achievement;
+			return {
+				...achievementData,
+				earned: false,
+				earnedAt: null
+			};
+		});
 	}
 
 	return {
