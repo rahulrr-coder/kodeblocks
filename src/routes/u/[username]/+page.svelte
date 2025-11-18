@@ -6,8 +6,9 @@
 
 	const { profile, achievements, trackProgress, weeklyHistory, isPublicView } = data;
 
-	// Calculate earned badges count
-	const earnedCount = achievements?.filter(a => a.earned).length || 0;
+	// Filter to show ONLY earned badges on public profile
+	const earnedAchievements = achievements?.filter(a => a.earned) || [];
+	const earnedCount = earnedAchievements.length;
 	const totalAchievements = achievements?.length || 0;
 
 	// Format date
@@ -106,19 +107,20 @@
 		<div class="card mb-8" in:fly={{ y: 30, duration: 500, delay: 500 }}>
 			<div class="flex items-center justify-between mb-6">
 				<h2 class="text-2xl font-bold text-neutral-900">Achievements</h2>
-				<span class="text-neutral-600">{earnedCount} / {totalAchievements} unlocked</span>
+				<span class="text-neutral-600">{earnedCount} {earnedCount === 1 ? 'Achievement' : 'Achievements'} Earned</span>
 			</div>
 
 			<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-				{#each achievements || [] as achievement}
+				{#if earnedAchievements.length > 0}
+				{#each earnedAchievements as achievement}
 					<div
-						class="relative {achievement.bgColor} rounded-xl p-4 transition-all hover:scale-105 {achievement.earned ? 'opacity-100 shadow-md' : 'opacity-40'}"
-						title="{achievement.earned ? '✓ Earned' : '🔒 Locked'}"
+						class="relative {achievement.bgColor} rounded-xl p-4 transition-all hover:scale-105 opacity-100 shadow-md"
+						title="✓ Earned"
 					>
 						<div class="text-4xl mb-2 text-center">{achievement.icon}</div>
 						<div class="text-sm font-bold text-neutral-900 text-center mb-1">{achievement.title}</div>
 						<div class="text-xs text-neutral-600 text-center">{achievement.description}</div>
-						{#if achievement.earned && achievement.earnedAt}
+						{#if achievement.earnedAt}
 							<div class="text-xs text-neutral-500 text-center mt-2">
 								Earned {formatDate(achievement.earnedAt)}
 							</div>
@@ -126,6 +128,13 @@
 					</div>
 				{/each}
 			</div>
+			{:else}
+				<div class="text-center py-12">
+					<div class="text-6xl mb-4">🏆</div>
+					<p class="text-lg text-neutral-600">No achievements earned yet.</p>
+					<p class="text-sm text-neutral-500 mt-2">Start solving problems to unlock achievements!</p>
+				</div>
+			{/if}
 		</div>
 
 		<!-- Track Progress Section -->
