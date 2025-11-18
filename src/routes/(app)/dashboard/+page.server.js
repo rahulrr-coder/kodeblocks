@@ -1,5 +1,7 @@
 import { createSupabaseServerClient } from '$lib/supabase.js';
 import { getTracksWithProgress } from '$lib/api/problems.js';
+import { getUserBadges } from '$lib/services/badges.js';
+import { ACHIEVEMENTS } from '$lib/config/badges.js';
 
 export const load = async (event) => {
 	const supabase = createSupabaseServerClient(event);
@@ -46,12 +48,27 @@ export const load = async (event) => {
 
 	// Get tracks with real problem counts and user progress
 	const tracksWithProgress = await getTracksWithProgress(supabase, user.id);
-	
+
+	// Get user's earned badges
+	const earnedBadges = await getUserBadges(user.id, event);
+
+	// Create a set of earned badge names for quick lookup
+	const earnedBadgeNames = new Set(earnedBadges.map(b => b.badges?.name).filter(Boolean));
+
+	// Combine achievements with earned status
+	const achievementsWithStatus = ACHIEVEMENTS.map(achievement => ({
+		...achievement,
+		earned: earnedBadgeNames.has(achievement.id),
+		earnedAt: earnedBadges.find(b => b.badges?.name === achievement.id)?.earned_at
+	}));
+
 	return {
 		profile,
 		recentWeeks: recentWeeks || [],
 		recentSubmissions: recentSubmissions || [],
 		tracks: tracksWithProgress,
-		user
+		user,
+		achievements: achievementsWithStatus,
+		earnedBadges: earnedBadges
 	};
 };

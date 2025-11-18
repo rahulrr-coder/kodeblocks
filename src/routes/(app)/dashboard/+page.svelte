@@ -9,7 +9,7 @@
 	
 	export let data;
 	
-	const { profile, recentWeeks, recentSubmissions, tracks, user } = data;
+	const { profile, recentWeeks, recentSubmissions, tracks, user, achievements } = data;
 	
 	// Calculate current week start in BROWSER's timezone
 	const currentWeekStart = getCurrentWeekStart();
@@ -210,17 +210,40 @@
 			</div>
 			
 			<!-- Achievements Card -->
-			<div 
+			<div
 				class="card space-y-4"
 				in:fly={{ y: 20, duration: 500, delay: 900, easing: cubicOut }}
 			>
-				<h3 class="text-xl font-semibold text-neutral-900">Achievements</h3>
-				<p class="text-neutral-600">You're just getting started! Solve more problems to unlock new badges.</p>
-				<div class="flex space-x-4">
-					<div class="w-16 h-16 bg-neutral-200 rounded-full flex items-center justify-center text-3xl opacity-50 transition-all hover:opacity-70 hover:scale-110" title="Locked">🎯</div>
-					<div class="w-16 h-16 bg-neutral-200 rounded-full flex items-center justify-center text-3xl opacity-50 transition-all hover:opacity-70 hover:scale-110" title="Locked">🔥</div>
-					<div class="w-16 h-16 bg-neutral-200 rounded-full flex items-center justify-center text-3xl opacity-50 transition-all hover:opacity-70 hover:scale-110" title="Locked">⭐</div>
+				<div class="flex items-center justify-between">
+					<h3 class="text-xl font-semibold text-neutral-900">Achievements</h3>
+					<span class="text-sm text-neutral-500">
+						{achievements?.filter(a => a.earned).length || 0} / {achievements?.length || 0}
+					</span>
 				</div>
+
+				{#if achievements && achievements.some(a => a.earned)}
+					<p class="text-neutral-600">Great progress! Keep going to unlock more badges.</p>
+				{:else}
+					<p class="text-neutral-600">You're just getting started! Solve more problems to unlock new badges.</p>
+				{/if}
+
+				<div class="grid grid-cols-3 gap-3">
+					{#each achievements?.slice(0, 6) || [] as achievement}
+						<div
+							class="w-full aspect-square {achievement.bgColor} rounded-xl flex flex-col items-center justify-center text-center p-2 transition-all hover:scale-105 {achievement.earned ? 'opacity-100 shadow-md' : 'opacity-40'}"
+							title="{achievement.earned ? '✓ ' : '🔒 '}{achievement.title} - {achievement.description}"
+						>
+							<div class="text-3xl mb-1">{achievement.icon}</div>
+							<div class="text-xs font-medium text-neutral-700 leading-tight">{achievement.title}</div>
+						</div>
+					{/each}
+				</div>
+
+				{#if achievements && achievements.length > 6}
+					<a href="/profile" class="text-sm text-amber-600 hover:text-amber-700 font-medium inline-flex items-center">
+						View all {achievements.length} achievements →
+					</a>
+				{/if}
 			</div>
 		</div>
 		
