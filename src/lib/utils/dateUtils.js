@@ -20,8 +20,11 @@ export function getCurrentWeekStart() {
 	monday.setDate(now.getDate() - daysToMonday);
 	monday.setHours(0, 0, 0, 0);
 	
-	// Return as YYYY-MM-DD
-	return monday.toISOString().split('T')[0];
+	// Return as YYYY-MM-DD (using local timezone, not UTC)
+	const year = monday.getFullYear();
+	const month = String(monday.getMonth() + 1).padStart(2, '0');
+	const day = String(monday.getDate()).padStart(2, '0');
+	return `${year}-${month}-${day}`;
 }
 
 /**
@@ -36,6 +39,10 @@ export function getWeekStart(date) {
 	const monday = new Date(date);
 	monday.setDate(date.getDate() - daysToMonday);
 	monday.setHours(0, 0, 0, 0);
-	
-	return monday.toISOString().split('T')[0];
+
+	// Return as YYYY-MM-DD (using local timezone, not UTC)
+	const year = monday.getFullYear();
+	const month = String(monday.getMonth() + 1).padStart(2, '0');
+	const day = String(monday.getDate()).padStart(2, '0');
+	return `${year}-${month}-${day}`;
 }

@@ -10,6 +10,14 @@ export const load = async (event) => {
 	
 	// Fetch all recent weeks data (last 2 weeks) to handle timezone differences
 	// We'll let the client determine which week to display
+
+	// Calculate date 14 days ago using local timezone (not UTC)
+	const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
+	const year = twoWeeksAgo.getFullYear();
+	const month = String(twoWeeksAgo.getMonth() + 1).padStart(2, '0');
+	const day = String(twoWeeksAgo.getDate()).padStart(2, '0');
+	const twoWeeksAgoStr = `${year}-${month}-${day}`;
+
 	const { data: allRecentProgress, error: allError } = await supabase
 		.from('weekly_progress')
 		.select(`
@@ -24,7 +32,7 @@ export const load = async (event) => {
 				consecutive_qualified_weeks
 			)
 		`)
-		.gte('week_start_date', new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0])
+		.gte('week_start_date', twoWeeksAgoStr)
 		.gt('bloks_earned', 0)
 		.order('week_start_date', { ascending: false })
 		.order('bloks_earned', { ascending: false });
