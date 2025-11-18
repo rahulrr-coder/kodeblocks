@@ -4,6 +4,7 @@
  */
 
 import { getCurrentWeekStart } from '$lib/utils/dateUtils.js';
+import { checkAndAwardBadges } from '$lib/services/badges.js';
 
 // Named constant for weekly qualification threshold
 const WEEKLY_QUALIFICATION_THRESHOLD = 150;
@@ -292,6 +293,17 @@ export async function markProblemComplete(supabase, userId, problemId, bloksEarn
 					last_solved_at: new Date().toISOString()
 				});
 		}
+	}
+
+	// 6. Check and award badges based on updated stats
+	try {
+		const newBadges = await checkAndAwardBadges(userId, supabase);
+		if (newBadges.length > 0) {
+			console.log(`🎉 User ${userId} earned ${newBadges.length} new badge(s)!`);
+		}
+	} catch (badgeError) {
+		console.error('Error checking/awarding badges:', badgeError);
+		// Don't fail the submission if badge awarding fails
 	}
 
 	return submission;
