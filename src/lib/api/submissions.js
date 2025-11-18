@@ -296,8 +296,9 @@ export async function markProblemComplete(supabase, userId, problemId, bloksEarn
 	}
 
 	// 6. Check and award badges based on updated stats
+	let newBadges = [];
 	try {
-		const newBadges = await checkAndAwardBadges(userId, supabase);
+		newBadges = await checkAndAwardBadges(userId, supabase);
 		if (newBadges.length > 0) {
 			console.log(`🎉 User ${userId} earned ${newBadges.length} new badge(s)!`);
 		}
@@ -306,7 +307,10 @@ export async function markProblemComplete(supabase, userId, problemId, bloksEarn
 		// Don't fail the submission if badge awarding fails
 	}
 
-	return submission;
+	return {
+		submission,
+		newBadges
+	};
 }
 
 /**

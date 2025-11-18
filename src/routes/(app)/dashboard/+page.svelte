@@ -178,7 +178,7 @@
 					<div class="py-6">
 						<div class="flex items-center justify-center gap-3 mb-2">
 							<h2 class="text-6xl font-bold text-amber-600">{dashboardData.currentWeekPoints}</h2>
-							<span class="text-5xl">🔥</span>
+							<span class="text-5xl animate-streak-flame">🔥</span>
 						</div>
 						<p class="text-lg font-semibold text-neutral-700">Bloks This Week</p>
 					</div>

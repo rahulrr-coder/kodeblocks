@@ -4,11 +4,15 @@
 	import ProgressOverview from '$lib/components/tracks/ProgressOverview.svelte';
 	import FilterBar from '$lib/components/tracks/FilterBar.svelte';
 	import SectionAccordion from '$lib/components/tracks/SectionAccordion.svelte';
+	import CelebrationModal from '$lib/components/celebrations/CelebrationModal.svelte';
+	import BadgeUnlockModal from '$lib/components/celebrations/BadgeUnlockModal.svelte';
 	import { groupBySection, applyFiltersAndSort, getSectionOrder } from '$lib/utils/filterUtils.js';
 	import { canComplete as checkCooldown, formatCooldownTime } from '$lib/utils/cooldownUtils.js';
 	import { markProblemComplete, updateLastCompletedAt } from '$lib/api/submissions.js';
 	import { createSupabaseLoadClient } from '$lib/supabase.js';
 	import { toast } from '$lib/stores/toast.js';
+	import { celebrationConfetti } from '$lib/utils/confetti.js';
+	import { playSuccessSound, playCoinSound, playAchievementSound } from '$lib/utils/sounds.js';
 
 	export let data;
 
@@ -32,6 +36,15 @@
 
 	// Expanded sections state
 	let expandedSections = new Set();
+
+	// Celebration modal state
+	let showCelebration = false;
+	let celebrationBloks = 0;
+	let celebrationProblemTitle = '';
+
+	// Badge unlock modal state
+	let showBadgeModal = false;
+	let newlyEarnedBadges = [];
 
 	// Reactive grouping and filtering
 	$: filteredProblems = applyFiltersAndSort(problems, filters);
@@ -100,8 +113,8 @@
 				return;
 			}
 
-			// Mark problem complete
-			await markProblemComplete(supabase, user.id, problemId, problem.bloks);
+			// Mark problem complete and get newly earned badges
+			const result = await markProblemComplete(supabase, user.id, problemId, problem.bloks);
 
 			// Update last completion timestamp
 			await updateLastCompletedAt(supabase, user.id);
@@ -110,8 +123,31 @@
 			lastCompletedAt = new Date().toISOString();
 			updateCooldownStatus();
 
-			// Show success message with animation
-			showSuccessMessage(problem);
+			// Play celebration sounds
+			playSuccessSound();
+			setTimeout(() => playCoinSound(), 200);
+
+			// Show confetti
+			celebrationConfetti({
+				particleCount: 150,
+				spread: 100,
+				colors: ['#f59e0b', '#d97706', '#14b8a6']
+			});
+
+			// Show celebration modal
+			celebrationBloks = problem.bloks;
+			celebrationProblemTitle = problem.title;
+			showCelebration = true;
+
+			// If badges were earned, show badge modal after celebration
+			if (result.newBadges && result.newBadges.length > 0) {
+				newlyEarnedBadges = result.newBadges;
+				// Delay badge modal slightly so celebration finishes first
+				setTimeout(() => {
+					playAchievementSound();
+					showBadgeModal = true;
+				}, 500);
+			}
 
 			// Refresh only specific routes that depend on user stats (faster than invalidateAll)
 			await Promise.all([
@@ -132,8 +168,13 @@
 		}
 	}
 
-	function showSuccessMessage(problem) {
-		toast.success(`🎉 Awesome! You earned ${problem.bloks} Bloks!\n\n"${problem.title}" marked as complete. Keep it up! 🚀`, 5000);
+	function handleCelebrationClose() {
+		showCelebration = false;
+	}
+
+	function handleBadgeModalClose() {
+		showBadgeModal = false;
+		newlyEarnedBadges = [];
 	}
 
 	// React to data changes
@@ -198,6 +239,20 @@
 		{/if}
 	</div>
 </div>
+
+<!-- Celebration Modals -->
+<CelebrationModal
+	bind:show={showCelebration}
+	bloks={celebrationBloks}
+	problemTitle={celebrationProblemTitle}
+	onClose={handleCelebrationClose}
+/>
+
+<BadgeUnlockModal
+	bind:show={showBadgeModal}
+	badges={newlyEarnedBadges}
+	onClose={handleBadgeModalClose}
+/>
 
 <style>
 	.track-page {
