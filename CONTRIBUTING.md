@@ -39,6 +39,7 @@ If you're not sure where to start, check out the [Issues](https://github.com/rah
 ### 1. Find or Create an Issue
 All work should be tied to an issue. If you have a new idea or bug fix, please [create an issue](https://github.com/rahulrr-coder/kodebloks/issues/new) first to discuss it with the team.
 
+
 ### 2. Fork the Repository
 Create a fork of this repo to your own GitHub account.
 
